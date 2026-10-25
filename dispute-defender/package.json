@@ -1,0 +1,60 @@
+{
+  "name": "dispute-defender",
+  "version": "1.0.0",
+  "description": "Autonomous AI agent that triages PayPal disputes, builds the evidence packet, and submits it after one-click merchant approval.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:push": "drizzle-kit push",
+    "seed": "tsx src/scripts/seed-disputes.ts",
+    "simulate-webhook": "tsx src/scripts/simulate-webhook.ts",
+    "test:redactor": "tsx src/test/redactor.test.ts",
+    "test:e2e": "tsx src/test/e2e-runner.ts"
+  },
+  "keywords": [
+    "paypal",
+    "disputes",
+    "chargeback",
+    "ai-agent",
+    "render",
+    "ag-grid",
+    "apimatic",
+    "hackathon"
+  ],
+  "author": "Farhan",
+  "license": "MIT",
+  "dependencies": {
+    "@ai-sdk/google": "^0.0.52",
+    "@ai-sdk/openai": "^0.0.66",
+    "ag-grid-community": "^32.2.0",
+    "ag-grid-react": "^32.2.0",
+    "ai": "^3.4.9",
+    "better-sqlite3": "^11.3.0",
+    "clsx": "^2.1.1",
+    "drizzle-orm": "^0.33.0",
+    "lucide-react": "^0.447.0",
+    "next": "^14.2.14",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwind-merge": "^2.5.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/node": "^20.16.10",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.20",
+    "drizzle-kit": "^0.24.2",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2"
+  },
+  "allowScripts": {
+    "better-sqlite3@11.10.0": true
+  }
+}
