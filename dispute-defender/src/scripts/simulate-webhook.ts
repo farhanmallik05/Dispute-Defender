@@ -4,6 +4,7 @@
  */
 
 import { processDisputePipeline } from '../lib/workflows/dispute-pipeline';
+import { closeDatabase } from '../lib/db';
 import { PayPalDispute } from '../types/dispute';
 
 const MOCK_WEBHOOK_EVENT = {
@@ -67,6 +68,20 @@ async function runSimulation() {
 
   const result = await processDisputePipeline(MOCK_WEBHOOK_EVENT.resource, mockTracking);
   console.log(`[Simulator] Pipeline complete: Dispute ${result.disputeId} is now ${result.status} (Verdict: ${result.recommendation})`);
+  try { closeDatabase(); } catch {}
+  if (typeof (process as any).reallyExit === 'function') {
+    (process as any).reallyExit(0);
+  } else {
+    process.exit(0);
+  }
 }
 
-runSimulation().catch(console.error);
+runSimulation().catch(err => {
+  console.error(err);
+  try { closeDatabase(); } catch {}
+  if (typeof (process as any).reallyExit === 'function') {
+    (process as any).reallyExit(1);
+  } else {
+    process.exit(1);
+  }
+});

@@ -199,7 +199,6 @@ async function seed() {
 seed()
   .then(() => {
     closeDatabase();
-    process.exit(0);
   })
   .catch(err => {
     console.error('Seeding failed:', err);
