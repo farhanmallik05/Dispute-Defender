@@ -25,7 +25,7 @@ Small and solo merchants who accept PayPal payments lose thousands of dollars ea
 4. **Autonomous AI Triage**: Analyzes carrier delivery confirmation, policy adherence, and dispute reasons to produce a structured **FIGHT** vs. **ACCEPT** recommendation with confidence score and evidence checklist.
 5. **Strict Human-in-the-Loop Approval Gate**: Displays a 1-click review screen showing the side-by-side PII redaction diff, evidence checklist, and editable draft response. **No submission is made to PayPal without explicit merchant consent.**
 6. **Disputes API Submission**: Fills the official PayPal Agent Toolkit gap by executing the multipart/form-data `POST /v1/customer/disputes/{id}/provide-evidence` call or accepting the claim to avoid penalty fees.
-7. **Immutable Audit Trail**: Every tool execution, redaction count, LLM prompt/response, and merchant override is recorded with timestamps in an immutable log.
+7. **Append-only Audit Trail**: Every pipeline stage, redaction count, model decision, webhook ID, and merchant override is recorded with timestamps in SQLite.
 
 ---
 
@@ -34,7 +34,7 @@ Small and solo merchants who accept PayPal payments lose thousands of dollars ea
 | Sponsor Track | Prize | How Dispute Defender Wins | Implementation Path |
 | :--- | :--- | :--- | :--- |
 | **AG Grid / AG Studio** | **$5,000 First Prize** | **Dual AG Grid Implementation**: Enterprise Dispute Command Center Queue with real-time SLA countdown pills, urgency coloring, custom cell renderers, quick search, and CSV export. Plus, the Risk Analytics Dashboard features an AG Grid Risk Matrix breaking down win rates and defense playbooks by claim reason. | [`src/components/queue/DisputeGrid.tsx`](./src/components/queue/DisputeGrid.tsx)<br>[`src/app/analytics/page.tsx`](./src/app/analytics/page.tsx) |
-| **Render Workflows** | **$1,000 First Prize** | **Infrastructure-as-Code Blueprint**: Declarative `render.yaml` configuring the Next.js web application and background worker queue for durable dispute triage jobs. | [`render.yaml`](./render.yaml)<br>[`src/lib/workflows/dispute-pipeline.ts`](./src/lib/workflows/dispute-pipeline.ts) |
+| **Render** | Deployment | `render.yaml` configures the Next.js web application. The current pipeline is synchronous and fail-closed; no unimplemented durable-workflow claim is made. | [`render.yaml`](./render.yaml)<br>[`src/lib/workflows/dispute-pipeline.ts`](./src/lib/workflows/dispute-pipeline.ts) |
 | **APIMatic Context Plugin** | **$1,000 Prize** | **Strict PayPal Server SDK Typing**: Integrates APIMatic prompt context rules to query Orders v2 and Transaction Reporting v1 using official SDK idioms. | [`src/lib/paypal/server-sdk.ts`](./src/lib/paypal/server-sdk.ts)<br>[`opencode.jsonc`](../opencode.jsonc) |
 
 ---
@@ -80,7 +80,7 @@ Small and solo merchants who accept PayPal payments lose thousands of dollars ea
 ## 🚀 Quick Start Guide
 
 ### 1. Prerequisites
-- **Node.js**: v18.0.0 or higher (fully tested on Node v20 and Node v24).
+- **Node.js**: v22.5.0 or higher (uses the built-in `node:sqlite` driver; tested on Node v24).
 - **npm** or **pnpm**.
 - (Optional) PayPal Sandbox Developer credentials & Google Gemini API Key.
 
@@ -106,7 +106,9 @@ Configure your credentials in `.env`:
 PAYPAL_CLIENT_ID=your_sandbox_client_id
 PAYPAL_CLIENT_SECRET=your_sandbox_client_secret
 PAYPAL_WEBHOOK_ID=your_webhook_id
-PAYPAL_MODE=sandbox
+PAYPAL_ENV=sandbox
+INTEGRITY_MODE=demo
+DATABASE_URL=sqlite.db
 
 # AI Model Provider (Gemini or OpenAI)
 AI_PROVIDER=gemini
@@ -115,12 +117,15 @@ GEMINI_API_KEY=your_gemini_api_key
 # Port
 PORT=8000
 ```
-*(Note: If API keys are omitted, Dispute Defender automatically falls back to high-fidelity deterministic evaluation and pre-seeded sandbox scenarios so judges can test every feature immediately).*
+`INTEGRITY_MODE=demo` is only for local deterministic fixtures. In any other mode, unsigned webhooks are rejected, PayPal credentials are required for approval, and failed PayPal calls do not update local status. Tracking is never fabricated: use `npm run seed` for explicit local fixtures or provide real integration data.
 
 ### 4. Run the Test Suites
 Validate the Zero-Trust PII Redactor:
 ```bash
 npm run test:redactor
+
+# Full local pipeline verification (uses an isolated SQLite database)
+DATABASE_URL=./e2e.sqlite INTEGRITY_MODE=demo npm run test:e2e
 ```
 Expected output:
 ```

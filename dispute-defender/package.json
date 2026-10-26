@@ -2,6 +2,9 @@
   "name": "dispute-defender",
   "version": "1.0.0",
   "description": "Autonomous AI agent that triages PayPal disputes, builds the evidence packet, and submits it after one-click merchant approval.",
+  "engines": {
+    "node": ">=22.5.0"
+  },
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
@@ -52,7 +55,5 @@
     "tsx": "^4.19.1",
     "typescript": "^5.6.2"
   },
-  "allowScripts": {
-    "better-sqlite3@11.10.0": true
-  }
+  "allowScripts": {}
 }
