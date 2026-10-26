@@ -40,8 +40,11 @@ export async function GET(
       .where(eq(auditLogs.disputeId, disputeId))
       .orderBy(desc(auditLogs.timestamp));
 
+    const { rawJson: _privateRawJson, ...publicDispute } = disputeRecord;
+
     return NextResponse.json({
-      dispute: disputeRecord,
+      // Never expose the unredacted PayPal payload through the browser API.
+      dispute: publicDispute,
       context: contextRecord ? {
         orderData: JSON.parse(contextRecord.orderData || '{}'),
         trackingData: JSON.parse(contextRecord.trackingData || '[]'),

@@ -49,7 +49,11 @@ export async function runTriageAgent(context: RedactedContextBundle): Promise<Tr
             abortSignal: abortController.signal
           });
           clearTimeout(timeoutId);
+        if (isVerdictGrounded(object, context)) {
           return object;
+        }
+
+        throw new Error('LLM verdict was not grounded in the supplied evidence bundle.');
         } catch (innerErr) {
           clearTimeout(timeoutId);
           throw innerErr;
@@ -61,6 +65,30 @@ export async function runTriageAgent(context: RedactedContextBundle): Promise<Tr
 
   // Deterministic Offline / Test Heuristic Fallback
   return generateDeterministicTriageVerdict(context);
+}
+
+function isVerdictGrounded(verdict: TriageVerdict, context: RedactedContextBundle): boolean {
+  const allowedSourcePrefixes = [
+    'sanitizedShipmentInfo',
+    'sanitizedOrderInfo',
+    'sanitizedMessages',
+    'disputeId',
+    'reason',
+    'amount',
+    'currency',
+    'dueDate',
+    'lifeCycleStage'
+  ];
+  const trackingNumbers = context.sanitizedShipmentInfo.map(shipment => shipment.trackingNumber).filter(Boolean);
+
+  if (verdict.recommendation === 'FIGHT' && trackingNumbers.length === 0) return false;
+
+  return verdict.evidenceChecklist.every(item => {
+    const sourceIsKnown = allowedSourcePrefixes.some(prefix => item.sourceField.startsWith(prefix));
+    const trackingIsKnown = !item.sourceField.toLowerCase().includes('tracking') ||
+      trackingNumbers.some(number => item.claimedFact.includes(number));
+    return sourceIsKnown && trackingIsKnown;
+  });
 }
 
 /**
