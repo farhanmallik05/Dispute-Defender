@@ -23,8 +23,9 @@ interface ReasonSummaryRow {
   reason: string;
   count: number;
   totalAmount: number;
-  protectedAmount: number;
-  winRate: number;
+  submittedAmount: number;
+  resolvedCount: number;
+  winRate: number | null;
   primaryDefense: string;
 }
 
@@ -51,25 +52,27 @@ export default function AnalyticsDashboardPage() {
 
   const totalAtRisk = disputes.reduce((sum, d) => sum + (d.amount || 0), 0);
   const submittedDisputes = disputes.filter(d => d.status === 'EVIDENCE_SUBMITTED');
-  const totalProtected = submittedDisputes.reduce((sum, d) => sum + (d.amount || 0), 0);
-  const winRate = disputes.length > 0 ? Math.round((submittedDisputes.length / disputes.length) * 100) : 88;
+  const totalSubmitted = submittedDisputes.reduce((sum, d) => sum + (d.amount || 0), 0);
+  // A submitted evidence packet is not a win. Win rate is intentionally
+  // unavailable until PayPal sends a resolved outcome.
+  const resolvedDisputes = disputes.filter(d => d.status === 'RESOLVED');
 
   // Group by reason for AG Grid rowData
   const rowData: ReasonSummaryRow[] = useMemo(() => {
-    const map: Record<string, { count: number; total: number; protected: number }> = {};
+       const map: Record<string, { count: number; total: number; submitted: number; resolved: number }> = {};
     for (const d of disputes) {
       const r = d.reason || 'OTHER';
-      if (!map[r]) map[r] = { count: 0, total: 0, protected: 0 };
+       if (!map[r]) map[r] = { count: 0, total: 0, submitted: 0, resolved: 0 };
       map[r].count++;
       map[r].total += d.amount || 0;
       if (d.status === 'EVIDENCE_SUBMITTED') {
-        map[r].protected += d.amount || 0;
+         map[r].submitted += d.amount || 0;
       }
+      if (d.status === 'RESOLVED') map[r].resolved++;
     }
 
     return Object.keys(map).map(r => {
       const item = map[r];
-      const rate = item.total > 0 ? Math.round((item.protected / item.total) * 100) : 0;
       let defense = 'Submit Carrier Proof of Fulfillment';
       if (r === 'MERCHANDISE_OR_SERVICE_NOT_AS_DESCRIBED') defense = 'Provide Item Specs & Return Policy Logs';
       if (r === 'UNAUTHORISED') defense = 'Provide Buyer IP Authorization & Delivery Scan';
@@ -78,8 +81,9 @@ export default function AnalyticsDashboardPage() {
         reason: r.replace(/_/g, ' '),
         count: item.count,
         totalAmount: item.total,
-        protectedAmount: item.protected,
-        winRate: rate || (item.count > 0 ? 90 : 0),
+         submittedAmount: item.submitted,
+         resolvedCount: item.resolved,
+         winRate: null,
         primaryDefense: defense
       };
     });
@@ -112,18 +116,24 @@ export default function AnalyticsDashboardPage() {
         sortable: true
       },
       {
-        headerName: 'Defended Capital',
-        field: 'protectedAmount',
+         headerName: 'Evidence Submitted',
+         field: 'submittedAmount',
         width: 160,
         valueFormatter: p => p.value !== undefined ? `$${p.value.toFixed(2)} USD` : '',
         cellClass: 'font-semibold text-emerald-600',
         sortable: true
       },
       {
-        headerName: 'Win Rate',
-        field: 'winRate',
-        width: 130,
-        valueFormatter: p => `${p.value}%`,
+         headerName: 'Resolved Outcomes',
+         field: 'resolvedCount',
+         width: 150,
+         sortable: true
+       },
+       {
+         headerName: 'Win Rate',
+         field: 'winRate',
+         width: 130,
+         valueFormatter: p => p.value === null || p.value === undefined ? 'N/A' : `${p.value}%`,
         cellClass: 'font-bold text-blue-600',
         sortable: true
       },
@@ -172,15 +182,15 @@ export default function AnalyticsDashboardPage() {
         </div>
 
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-          <p className="text-xs font-medium uppercase text-slate-500">Defended Capital</p>
-          <p className="text-2xl font-bold text-emerald-600 mt-1">${totalProtected.toFixed(2)}</p>
-          <p className="text-xs text-emerald-600 mt-1">Evidence submitted to PayPal</p>
+           <p className="text-xs font-medium uppercase text-slate-500">Evidence Submitted</p>
+           <p className="text-2xl font-bold text-emerald-600 mt-1">${totalSubmitted.toFixed(2)}</p>
+           <p className="text-xs text-emerald-600 mt-1">Not yet a confirmed win</p>
         </div>
 
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
           <p className="text-xs font-medium uppercase text-slate-500">Projected Win Rate</p>
-          <p className="text-2xl font-bold text-blue-600 mt-1">{winRate}%</p>
-          <p className="text-xs text-slate-400 mt-1">Based on carrier proof</p>
+           <p className="text-2xl font-bold text-blue-600 mt-1">{resolvedDisputes.length ? 'N/A' : 'N/A'}</p>
+           <p className="text-xs text-slate-400 mt-1">Awaiting PayPal resolution outcomes</p>
         </div>
 
         <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
@@ -225,20 +235,20 @@ export default function AnalyticsDashboardPage() {
             <Clock className="w-5 h-5 text-emerald-600 mr-2" />
             SLA Response Adherence
           </h3>
-          <p className="text-xs text-slate-500">
-            PayPal sets a strict 10 to 20 day window for seller responses. Dispute Defender guarantees zero default forfeitures.
+             <p className="text-xs text-slate-500">
+             PayPal sets a strict response window. This dashboard reports submission activity; it does not claim a win until a resolved outcome is received.
           </p>
 
           <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200 space-y-2">
             <div className="flex justify-between items-center text-xs font-bold text-emerald-900">
-              <span>SLA Target: 100% On-Time Filing</span>
-              <span>100% Achieved</span>
+               <span>SLA Target: tracked from due dates</span>
+               <span>{disputes.length ? 'Live data' : 'No data'}</span>
             </div>
             <div className="w-full bg-emerald-200 rounded-full h-2.5">
               <div className="bg-emerald-600 h-2.5 rounded-full w-full" />
             </div>
             <p className="text-[11px] text-emerald-700 mt-2">
-              Autonomous context gathering and pre-drafted dossiers reduce merchant filing time from 45 minutes to a single click.
+               Autonomous context gathering and pre-drafted dossiers reduce review effort; actual SLA performance is measured from stored timestamps.
             </p>
           </div>
         </div>
@@ -254,10 +264,10 @@ export default function AnalyticsDashboardPage() {
           <div className="p-4 bg-blue-50 rounded-xl border border-blue-200 space-y-2 text-xs text-blue-900">
             <p className="font-bold flex items-center">
               <CheckCircle2 className="w-4 h-4 mr-1 text-blue-700" />
-              100% Buyer PII Masking Guaranteed
+               Buyer PII redaction verified in the local test suite
             </p>
             <p className="text-blue-700">
-              Buyer names, email addresses, phone numbers, and physical residential coordinates are masked with cryptographic tokens before any LLM prompt execution.
+               Buyer names, email addresses, phone numbers, and street addresses are masked before the LLM prompt. This is deterministic redaction, not cryptographic tokenization.
             </p>
           </div>
         </div>
