@@ -20,12 +20,14 @@ export type AuditEventType =
   | 'PAYPAL_EVIDENCE_SUBMITTED'
   | 'PAYPAL_CLAIM_ACCEPTED'
   | 'SUBMISSION_FAILED'
-  | 'SANDBOX_ADJUDICATED';
+  | 'SANDBOX_ADJUDICATED'
+  | 'DISPUTE_RESOLVED';
 
 export async function logAuditEvent(params: {
   disputeId: string;
   eventType: AuditEventType;
   actor: AuditActor;
+  eventId?: string;
   payload: Record<string, any>;
 }): Promise<void> {
   const auditEntry = {
@@ -33,6 +35,7 @@ export async function logAuditEvent(params: {
     disputeId: params.disputeId,
     eventType: params.eventType,
     actor: params.actor,
+    eventId: params.eventId || null,
     payload: JSON.stringify(params.payload),
     timestamp: new Date().toISOString()
   };

@@ -17,11 +17,10 @@ import { sanitizeDisputeContext } from '../agent/redactor';
 import { runTriageAgent } from '../agent/triage';
 import { PayPalDispute, DisputeContextBundle } from '../../types/dispute';
 import { eq } from 'drizzle-orm';
-import crypto from 'crypto';
 
 export async function processDisputePipeline(
   dispute: PayPalDispute,
-  mockTracking?: any[]
+  providedTracking: any[] = []
 ): Promise<{ disputeId: string; status: string; recommendation: string }> {
   const disputeId = dispute.dispute_id;
   const now = new Date().toISOString();
@@ -63,16 +62,9 @@ export async function processDisputePipeline(
   });
 
   // Step 2: Context Aggregation
-  // Extract or mock tracking info for sandbox verification
-  const shipmentTracking = mockTracking || [
-    {
-      transaction_id: dispute.disputed_transactions?.[0]?.seller_transaction_id || 'TX_DEFAULT',
-      tracking_number: '122533485',
-      carrier: 'FEDEX',
-      status: 'DELIVERED',
-      actual_delivery_date: '2026-10-24T14:30:00Z'
-    }
-  ];
+  // Tracking must come from PayPal/carrier integration or an explicit test
+  // fixture. Never manufacture delivery evidence for a real dispute.
+  const shipmentTracking = providedTracking;
 
   const contextBundle: DisputeContextBundle = {
     dispute,
@@ -98,13 +90,23 @@ export async function processDisputePipeline(
   await db
     .insert(disputeContexts)
     .values({
-      id: `ctx_${crypto.randomUUID()}`,
+      id: `ctx_${disputeId}`,
       disputeId,
       orderData: JSON.stringify(redactedBundle.sanitizedOrderInfo),
       trackingData: JSON.stringify(redactedBundle.sanitizedShipmentInfo),
       buyerMessages: JSON.stringify(redactedBundle.sanitizedMessages),
       redactedContext: JSON.stringify(redactedBundle),
       createdAt: now
+    })
+    .onConflictDoUpdate({
+      target: disputeContexts.id,
+      set: {
+        orderData: JSON.stringify(redactedBundle.sanitizedOrderInfo),
+        trackingData: JSON.stringify(redactedBundle.sanitizedShipmentInfo),
+        buyerMessages: JSON.stringify(redactedBundle.sanitizedMessages),
+        redactedContext: JSON.stringify(redactedBundle),
+        createdAt: now
+      }
     });
 
   await logAuditEvent({
@@ -123,7 +125,7 @@ export async function processDisputePipeline(
   await db
     .insert(triageDecisions)
     .values({
-      id: `dec_${crypto.randomUUID()}`,
+      id: `dec_${disputeId}`,
       disputeId,
       recommendation: verdict.recommendation,
       confidenceScore: verdict.confidenceScore,
@@ -133,6 +135,21 @@ export async function processDisputePipeline(
       evidenceTypeRequired: verdict.evidenceTypeRequired,
       status: 'PENDING_APPROVAL',
       createdAt: now
+    })
+    .onConflictDoUpdate({
+      target: triageDecisions.id,
+      set: {
+        recommendation: verdict.recommendation,
+        confidenceScore: verdict.confidenceScore,
+        summaryReason: verdict.summaryReason,
+        evidenceChecklist: JSON.stringify(verdict.evidenceChecklist),
+        draftNotes: verdict.proposedDraftNotes,
+        evidenceTypeRequired: verdict.evidenceTypeRequired,
+        status: 'PENDING_APPROVAL',
+        merchantEditedNotes: null,
+        approvedAt: null,
+        createdAt: now
+      }
     });
 
   // Advance dispute status to AWAITING_APPROVAL

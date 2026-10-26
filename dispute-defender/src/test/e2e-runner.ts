@@ -45,6 +45,7 @@ interface TestResult {
 
 async function runE2ETestSuite(): Promise<void> {
   const mode = process.env.INTEGRITY_MODE || 'demo';
+  process.env.INTEGRITY_MODE = mode;
   const startTime = Date.now();
 
   // In demo mode, ensure hermetic offline execution using deterministic heuristics
@@ -337,6 +338,9 @@ async function runE2ETestSuite(): Promise<void> {
     });
 
     const res = await approveRoute(req, { params: { id: 'PP-D-E2E-T1-TC10' } });
+    if (res.status !== 200) {
+      console.log('    [DEBUG TC-1.10] approve error:', res.status, await res.json());
+    }
     assert(res.status === 200, `Expected status 200, got ${res.status}`);
 
     const body = await res.json();
@@ -936,19 +940,11 @@ async function runE2ETestSuite(): Promise<void> {
 runE2ETestSuite()
   .then(() => {
     console.log('[E2E TEST SUITE COMPLETE] All tests passed.');
-    try { closeDatabase(); } catch {}
-    if (typeof (process as any).reallyExit === 'function') {
-      (process as any).reallyExit(0);
-    } else {
-      process.exit(0);
-    }
+    // Do not call process.exit here: better-sqlite3 can crash Node 24 during
+    // native isolate cleanup. Let the event loop drain naturally.
+    process.exitCode = 0;
   })
   .catch((err) => {
     console.error('[E2E TEST SUITE ERROR]:', err);
-    try { closeDatabase(); } catch {}
-    if (typeof (process as any).reallyExit === 'function') {
-      (process as any).reallyExit(1);
-    } else {
-      process.exit(1);
-    }
+    process.exitCode = 1;
   });

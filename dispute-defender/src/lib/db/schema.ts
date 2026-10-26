@@ -53,6 +53,13 @@ export const auditLogs = sqliteTable('audit_logs', {
   disputeId: text('dispute_id').notNull(),
   eventType: text('event_type').notNull(), // WEBHOOK_RECEIVED, CONTEXT_AGGREGATED, PII_REDACTED, TRIAGE_COMPLETED, MERCHANT_APPROVED, PAYPAL_SUBMITTED
   actor: text('actor').notNull(), // SYSTEM, AGENT, MERCHANT
+  eventId: text('event_id'), // PayPal webhook event ID, when applicable
   payload: text('payload').notNull(), // JSON snapshot
   timestamp: text('timestamp').notNull()
+});
+
+export const webhookEvents = sqliteTable('webhook_events', {
+  id: text('id').primaryKey(),
+  eventType: text('event_type').notNull(),
+  receivedAt: text('received_at').notNull()
 });

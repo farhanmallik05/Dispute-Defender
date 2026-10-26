@@ -17,12 +17,14 @@ export interface SubmitEvidenceParams {
   trackingNumber?: string;
   carrierName?: string;
   notes: string;
+  endpointUrl?: string;
 }
 
 export interface AcceptClaimParams {
   disputeId: string;
   note?: string;
   acceptClaimType?: 'REFUND' | 'REFUND_WITH_RETURN' | 'REFUND_WITH_REPLACEMENT';
+  endpointUrl?: string;
 }
 
 /**
@@ -121,7 +123,7 @@ export async function getPayPalDispute(disputeId: string): Promise<PayPalDispute
 export async function submitDisputeEvidence(params: SubmitEvidenceParams): Promise<any> {
   const token = await getPayPalAccessToken();
   const baseUrl = getPayPalBaseUrl();
-  const url = `${baseUrl}/v1/customer/disputes/${params.disputeId}/provide-evidence`;
+  const url = params.endpointUrl || `${baseUrl}/v1/customer/disputes/${params.disputeId}/provide-evidence`;
 
   const inputPayload = {
     evidences: [
@@ -173,7 +175,7 @@ export async function submitDisputeEvidence(params: SubmitEvidenceParams): Promi
 export async function acceptPayPalDisputeClaim(params: AcceptClaimParams): Promise<any> {
   const token = await getPayPalAccessToken();
   const baseUrl = getPayPalBaseUrl();
-  const url = `${baseUrl}/v1/customer/disputes/${params.disputeId}/accept-claim`;
+  const url = params.endpointUrl || `${baseUrl}/v1/customer/disputes/${params.disputeId}/accept-claim`;
 
   const body: Record<string, any> = {
     accept_claim_type: params.acceptClaimType || 'REFUND'

@@ -32,4 +32,8 @@ next-env.d.ts
 # SQLite Database
 *.sqlite
 *.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
 *.db
+*.db-shm
+*.db-wal

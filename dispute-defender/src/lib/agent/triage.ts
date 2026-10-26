@@ -6,42 +6,58 @@
  */
 
 import { generateObject } from 'ai';
-import { google } from '@ai-sdk/google';
-import { openai } from '@ai-sdk/openai';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { createOpenAI } from '@ai-sdk/openai';
 import { RedactedContextBundle, TriageVerdict } from '../../types/dispute';
 import { TriageVerdictSchema } from './schemas';
 import { TRIAGE_AGENT_SYSTEM_PROMPT, buildTriageUserPrompt } from './prompts';
 
 export async function runTriageAgent(context: RedactedContextBundle): Promise<TriageVerdict> {
-  const modelChoice = process.env.AI_MODEL || 'gemini-2.5-flash';
-  const hasGemini = Boolean(process.env.GEMINI_API_KEY);
-  const hasOpenAI = Boolean(process.env.OPENAI_API_KEY);
+  const isDemoMode = process.env.INTEGRITY_MODE === 'demo';
+  const geminiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+  const openAIKey = process.env.OPENAI_API_KEY;
 
-  // If valid API keys exist, run the true LLM inference
-  if (hasGemini || hasOpenAI) {
+  // In demo mode or if no API keys exist, immediately use deterministic heuristics
+  if (isDemoMode || (!geminiKey && !openAIKey)) {
+    return generateDeterministicTriageVerdict(context);
+  }
+
+  const modelChoice = process.env.AI_MODEL || 'gemini-2.5-flash-lite';
     try {
       let model;
-      if (modelChoice.startsWith('gemini') && hasGemini) {
-        model = google(modelChoice);
-      } else if (hasOpenAI) {
+      if (openAIKey && (modelChoice.startsWith('gpt') || !geminiKey)) {
+        const openai = createOpenAI({ apiKey: openAIKey });
         model = openai(modelChoice.startsWith('gpt') ? modelChoice : 'gpt-4o-mini');
-      } else {
-        model = google('gemini-2.5-flash');
+      } else if (geminiKey) {
+        const google = createGoogleGenerativeAI({ apiKey: geminiKey });
+        const resolvedModel = modelChoice.startsWith('gemini') ? modelChoice : 'gemini-2.5-flash-lite';
+        model = google(resolvedModel);
       }
 
-      const { object } = await generateObject({
-        model,
-        schema: TriageVerdictSchema,
-        system: TRIAGE_AGENT_SYSTEM_PROMPT,
-        prompt: buildTriageUserPrompt(JSON.stringify(context, null, 2)),
-        temperature: 0.1
-      });
+      if (model) {
+        // Enforce a strict 5-second timeout on LLM inference
+        const abortController = new AbortController();
+        const timeoutId = setTimeout(() => abortController.abort(), 5000);
 
-      return object;
-    } catch (err) {
-      console.warn('[Triage Agent] LLM inference failed, falling back to deterministic heuristics:', err);
+        try {
+          const { object } = await generateObject({
+            model,
+            schema: TriageVerdictSchema,
+            system: TRIAGE_AGENT_SYSTEM_PROMPT,
+            prompt: buildTriageUserPrompt(JSON.stringify(context, null, 2)),
+            temperature: 0.1,
+            abortSignal: abortController.signal
+          });
+          clearTimeout(timeoutId);
+          return object;
+        } catch (innerErr) {
+          clearTimeout(timeoutId);
+          throw innerErr;
+        }
+      }
+    } catch (err: any) {
+      console.warn('[Triage Agent] LLM inference failed, falling back to deterministic heuristics:', err.message);
     }
-  }
 
   // Deterministic Offline / Test Heuristic Fallback
   return generateDeterministicTriageVerdict(context);

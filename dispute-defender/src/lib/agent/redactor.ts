@@ -17,6 +17,11 @@ const PHONE_REGEX = /(?<![A-Za-z0-9])(?:\+?\d{1,4}[-.\s])?(?:\(?\d{2,4}\)?[-.\s]
 // IPv4 and IPv6 regex (supports standard IPv4, full 8-hextet IPv6, and compressed IPv6 including ::1)
 const IP_REGEX = /\b(?:\d{1,3}\.){3}\d{1,3}\b|::1\b|(?:::)?(?:[0-9a-fA-F]{1,4}:){1,7}[0-9a-fA-F]{1,4}\b/g;
 
+// Operational evidence must survive generic PII rules. Shield valid UPS
+// tracking values and ISO timestamps before phone/IP matching.
+const UPS_TRACKING_REGEX = /\b1Z[0-9A-Z]{16}\b/gi;
+const ISO_TIMESTAMP_REGEX = /\b\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z\b/g;
+
 const SUFFIXES = 'Street|St|Avenue|Ave|Road|Rd|Boulevard|Blvd|Drive|Dr|Lane|Ln|Court|Ct|Crt|Way|Square|Sq|Trail|Trl|Parkway|Pkwy|Terrace|Ter|Circle|Cir|Place|Pl|Highway|Hwy|Loop|Crescent|Cres|Alley|Aly|Row|Run|Path|Walk|Plaza|Plz|Crossing|Xing|Close|Heights|Hts';
 const UNIT_SPECIFIERS = 'Apt|Apartment|Suite|Ste|Unit|Room|Rm|#';
 
@@ -48,6 +53,15 @@ export function sanitizeText(text: string, knownBuyerNames: string[] = []): Reda
   if (!text) return { sanitizedText: '', replacements: { emails: 0, phones: 0, ips: 0, addresses: 0, names: 0 } };
 
   let sanitized = text;
+  const protectedValues: string[] = [];
+  const protect = (value: string): string => {
+    const token = `__DD_PROTECTED_${protectedValues.length}__`;
+    protectedValues.push(value);
+    return token;
+  };
+
+  sanitized = sanitized.replace(UPS_TRACKING_REGEX, match => protect(match));
+  sanitized = sanitized.replace(ISO_TIMESTAMP_REGEX, match => protect(match));
   let emails = 0;
   let phones = 0;
   let ips = 0;
@@ -93,6 +107,8 @@ export function sanitizeText(text: string, knownBuyerNames: string[] = []): Reda
       });
     }
   }
+
+  sanitized = sanitized.replace(/__DD_PROTECTED_(\d+)__/g, (_match, index: string) => protectedValues[Number(index)]);
 
   return {
     sanitizedText: sanitized,

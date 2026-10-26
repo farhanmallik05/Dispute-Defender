@@ -5,32 +5,19 @@ import Link from 'next/link';
 import { 
   ShieldCheck, 
   Clock, 
-  AlertTriangle, 
-  ArrowRight, 
   RefreshCw, 
   DollarSign, 
-  FileText,
-  Filter
+  Layers,
+  LayoutGrid
 } from 'lucide-react';
-
-interface DisputeSummary {
-  id: string;
-  status: string;
-  reason: string;
-  amount: number;
-  currency: string;
-  dueDate: string | null;
-  lifeCycleStage: string;
-  recommendation: 'FIGHT' | 'ACCEPT' | null;
-  confidenceScore: number | null;
-  summaryReason: string | null;
-}
+import DisputeGrid, { DisputeGridRow } from '@/components/queue/DisputeGrid';
 
 export default function DisputeQueuePage() {
-  const [disputes, setDisputes] = useState<DisputeSummary[]>([]);
+  const [disputes, setDisputes] = useState<DisputeGridRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [filter, setFilter] = useState<'ALL' | 'AWAITING_APPROVAL' | 'SUBMITTED' | 'RESOLVED'>('ALL');
+  const [viewMode, setViewMode] = useState<'AG_GRID' | 'COMPACT'>('AG_GRID');
 
   const fetchDisputes = async () => {
     try {
@@ -62,14 +49,6 @@ export default function DisputeQueuePage() {
     }
   };
 
-  const calculateHoursLeft = (dueDateStr: string | null) => {
-    if (!dueDateStr) return null;
-    const due = new Date(dueDateStr).getTime();
-    const now = Date.now();
-    const diffHours = Math.round((due - now) / (1000 * 60 * 60));
-    return diffHours;
-  };
-
   const filteredDisputes = disputes.filter(d => {
     if (filter === 'ALL') return true;
     if (filter === 'AWAITING_APPROVAL') return d.status === 'AWAITING_APPROVAL';
@@ -95,6 +74,31 @@ export default function DisputeQueuePage() {
           </p>
         </div>
         <div className="flex items-center space-x-3">
+          <div className="flex items-center border border-slate-300 rounded-lg p-0.5 bg-white shadow-sm text-xs font-semibold">
+            <button
+              onClick={() => setViewMode('AG_GRID')}
+              className={`px-2.5 py-1 rounded-md flex items-center transition-colors ${
+                viewMode === 'AG_GRID'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <LayoutGrid className="w-3.5 h-3.5 mr-1" />
+              AG Grid
+            </button>
+            <button
+              onClick={() => setViewMode('COMPACT')}
+              className={`px-2.5 py-1 rounded-md flex items-center transition-colors ${
+                viewMode === 'COMPACT'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5 mr-1" />
+              Standard
+            </button>
+          </div>
+
           <button
             onClick={handleSync}
             disabled={syncing}
@@ -178,109 +182,52 @@ export default function DisputeQueuePage() {
         </button>
       </div>
 
-      {/* Dispute Queue Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        {loading ? (
-          <div className="p-12 text-center text-slate-500">Loading dispute queue...</div>
-        ) : filteredDisputes.length === 0 ? (
-          <div className="p-12 text-center">
-            <FileText className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-            <h3 className="text-base font-semibold text-slate-900">No disputes found in this view</h3>
-            <p className="text-sm text-slate-500 mt-1">Click "Sync Sandbox" to pull active disputes.</p>
-          </div>
-        ) : (
+      {/* Primary AG Grid View or Standard View */}
+      {viewMode === 'AG_GRID' ? (
+        <DisputeGrid disputes={filteredDisputes} loading={loading} />
+      ) : (
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden p-6 text-sm">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 text-left text-sm">
-              <thead className="bg-slate-50 text-slate-600 font-semibold">
-                <tr>
-                  <th className="py-3.5 px-4">Urgency / Due Date</th>
-                  <th className="py-3.5 px-4">Dispute ID</th>
-                  <th className="py-3.5 px-4">Claim Reason</th>
-                  <th className="py-3.5 px-4">Amount</th>
-                  <th className="py-3.5 px-4">AI Recommendation</th>
-                  <th className="py-3.5 px-4">Status</th>
-                  <th className="py-3.5 px-4 text-right">Action</th>
+            <table className="min-w-full divide-y divide-slate-200">
+              <thead>
+                <tr className="text-left font-bold text-slate-600">
+                  <th className="py-2 px-3">Dispute ID</th>
+                  <th className="py-2 px-3">Reason</th>
+                  <th className="py-2 px-3">Amount</th>
+                  <th className="py-2 px-3">Recommendation</th>
+                  <th className="py-2 px-3">Status</th>
+                  <th className="py-2 px-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-200">
-                {filteredDisputes.map(dispute => {
-                  const hoursLeft = calculateHoursLeft(dispute.dueDate);
-                  const isUrgent = hoursLeft !== null && hoursLeft <= 48;
-
-                  return (
-                    <tr key={dispute.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-4 px-4 whitespace-nowrap">
-                        {hoursLeft !== null ? (
-                          <span
-                            className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
-                              isUrgent
-                                ? 'bg-red-50 text-red-700 border border-red-200 animate-pulse'
-                                : 'bg-slate-100 text-slate-700'
-                            }`}
-                          >
-                            <Clock className="w-3 h-3 mr-1" />
-                            {hoursLeft > 24 ? `${Math.round(hoursLeft / 24)} days left` : `${hoursLeft}h left`}
-                          </span>
-                        ) : (
-                          <span className="text-slate-400 text-xs">No deadline</span>
-                        )}
-                      </td>
-                      <td className="py-4 px-4 font-mono font-medium text-slate-900">
-                        {dispute.id}
-                      </td>
-                      <td className="py-4 px-4 max-w-xs truncate text-slate-700">
-                        {dispute.reason.replace(/_/g, ' ')}
-                      </td>
-                      <td className="py-4 px-4 font-semibold text-slate-900">
-                        ${dispute.amount.toFixed(2)} {dispute.currency}
-                      </td>
-                      <td className="py-4 px-4">
-                        {dispute.recommendation ? (
-                          <span
-                            className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold ${
-                              dispute.recommendation === 'FIGHT'
-                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                                : 'bg-amber-50 text-amber-700 border border-amber-200'
-                            }`}
-                          >
-                            {dispute.recommendation} ({dispute.confidenceScore}%)
-                          </span>
-                        ) : (
-                          <span className="text-xs text-slate-400">Triaging...</span>
-                        )}
-                      </td>
-                      <td className="py-4 px-4 whitespace-nowrap">
-                        <span
-                          className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                            dispute.status === 'AWAITING_APPROVAL'
-                              ? 'bg-amber-100 text-amber-800'
-                              : dispute.status === 'EVIDENCE_SUBMITTED'
-                              ? 'bg-blue-100 text-blue-800'
-                              : dispute.status === 'CLAIM_ACCEPTED'
-                              ? 'bg-slate-200 text-slate-800'
-                              : 'bg-slate-100 text-slate-600'
-                          }`}
-                        >
-                          {dispute.status.replace(/_/g, ' ')}
-                        </span>
-                      </td>
-                      <td className="py-4 px-4 text-right whitespace-nowrap">
-                        <Link
-                          href={`/disputes/${dispute.id}`}
-                          className="inline-flex items-center px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-md shadow-sm transition-colors"
-                        >
-                          Review & Approve
-                          <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })}
+              <tbody className="divide-y divide-slate-100">
+                {filteredDisputes.map(d => (
+                  <tr key={d.id} className="hover:bg-slate-50">
+                    <td className="py-3 px-3 font-mono font-bold text-slate-900">{d.id}</td>
+                    <td className="py-3 px-3">{d.reason.replace(/_/g, ' ')}</td>
+                    <td className="py-3 px-3 font-semibold">${d.amount.toFixed(2)} {d.currency}</td>
+                    <td className="py-3 px-3">
+                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                        d.recommendation === 'FIGHT' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                      }`}>
+                        {d.recommendation} ({d.confidenceScore}%)
+                      </span>
+                    </td>
+                    <td className="py-3 px-3">{d.status.replace(/_/g, ' ')}</td>
+                    <td className="py-3 px-3 text-right">
+                      <Link
+                        href={`/disputes/${d.id}`}
+                        className="px-2.5 py-1 bg-slate-900 text-white rounded text-xs font-bold hover:bg-slate-800"
+                      >
+                        Review
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

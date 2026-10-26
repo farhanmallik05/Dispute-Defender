@@ -7,14 +7,14 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const logs = await db
+    const logs: Array<Record<string, any>> = await db
       .select()
       .from(auditLogs)
       .orderBy(desc(auditLogs.timestamp))
       .limit(100);
 
     return NextResponse.json({
-      auditLogs: logs.map(l => ({
+      auditLogs: logs.map((l: any) => ({
         ...l,
         payload: JSON.parse(l.payload || '{}')
       }))

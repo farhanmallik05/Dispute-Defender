@@ -3,7 +3,7 @@ import { db } from '@/lib/db';
 import { disputes, disputeContexts, triageDecisions } from '@/lib/db/schema';
 import { logAuditEvent } from '@/lib/db/audit';
 import { submitDisputeEvidence, acceptPayPalDisputeClaim, getDisputeActionLinks } from '@/lib/paypal/disputes';
-import { eq } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,7 +14,7 @@ export async function POST(
   try {
     const disputeId = params.id;
     const body = await request.json();
-    const { action, merchantEditedNotes } = body; // action: 'FIGHT' | 'ACCEPT'
+    const { action, merchantEditedNotes, carrierName, trackingNumber } = body; // action: 'FIGHT' | 'ACCEPT'
 
     if (!action || (action !== 'FIGHT' && action !== 'ACCEPT')) {
       return NextResponse.json(
@@ -37,7 +37,16 @@ export async function POST(
       .select()
       .from(triageDecisions)
       .where(eq(triageDecisions.disputeId, disputeId))
+      .orderBy(desc(triageDecisions.createdAt))
       .get();
+
+    if (!decision) {
+      return NextResponse.json({ error: 'No triage decision exists for this dispute.' }, { status: 409 });
+    }
+
+    if (dispute.status !== 'AWAITING_APPROVAL' || decision.status !== 'PENDING_APPROVAL') {
+      return NextResponse.json({ error: 'This dispute is no longer awaiting merchant approval.' }, { status: 409 });
+    }
 
     const contextRecord = await db
       .select()
@@ -45,11 +54,11 @@ export async function POST(
       .where(eq(disputeContexts.disputeId, disputeId))
       .get();
 
-    // Dynamically extract carrier and tracking number from disputeContexts
-    let dynamicTrackingNumber: string | undefined;
-    let dynamicCarrierName: string | undefined;
+    // Dynamically extract carrier and tracking number from body, context, or merchant notes
+    let dynamicTrackingNumber: string | undefined = trackingNumber;
+    let dynamicCarrierName: string | undefined = carrierName;
 
-    if (contextRecord?.trackingData) {
+    if (!dynamicTrackingNumber && contextRecord?.trackingData) {
       try {
         const parsed = JSON.parse(contextRecord.trackingData);
         const trackingList = Array.isArray(parsed) ? parsed : [parsed];
@@ -76,6 +85,18 @@ export async function POST(
       }
     }
 
+    if (!dynamicTrackingNumber) {
+      const notes = merchantEditedNotes || decision?.draftNotes || '';
+      const trackingMatch = notes.match(/\b(1Z[0-9A-Z]{16}|[0-9]{8,22}|[A-Z]{2}[0-9]{9}[A-Z]{2})\b/i);
+      if (trackingMatch) {
+        dynamicTrackingNumber = trackingMatch[0];
+      }
+      if (/fedex/i.test(notes)) dynamicCarrierName = dynamicCarrierName || 'FEDEX';
+      else if (/ups/i.test(notes)) dynamicCarrierName = dynamicCarrierName || 'UPS';
+      else if (/usps/i.test(notes)) dynamicCarrierName = dynamicCarrierName || 'USPS';
+      else if (/dhl/i.test(notes)) dynamicCarrierName = dynamicCarrierName || 'DHL';
+    }
+
     // Validate HATEOAS permissions if dispute links are present in rawJson
     let rawDispute: any = null;
     try {
@@ -85,6 +106,13 @@ export async function POST(
     } catch {}
 
     const actionLinks = rawDispute ? getDisputeActionLinks(rawDispute) : null;
+    if (!actionLinks || !rawDispute?.links || !Array.isArray(rawDispute.links) || rawDispute.links.length === 0) {
+      return NextResponse.json(
+        { error: 'PayPal action permissions are unavailable; refresh the dispute before approving.' },
+        { status: 409 }
+      );
+    }
+
     if (actionLinks && rawDispute?.links && Array.isArray(rawDispute.links) && rawDispute.links.length > 0) {
       if (action === 'FIGHT' && !actionLinks.canProvideEvidence) {
         return NextResponse.json(
@@ -98,6 +126,13 @@ export async function POST(
           { status: 400 }
         );
       }
+    }
+
+    if (action === 'FIGHT' && !dynamicTrackingNumber) {
+      return NextResponse.json(
+        { error: 'Cannot submit evidence without a verified carrier tracking number.' },
+        { status: 422 }
+      );
     }
 
     const notesToSubmit = merchantEditedNotes || decision?.draftNotes || 'Evidence provided by seller.';
@@ -120,6 +155,20 @@ export async function POST(
     const hasCredentials = Boolean(
       process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET
     );
+    const isLiveProduction = process.env.PAYPAL_MODE === 'live';
+
+    if (isLiveProduction && !hasCredentials) {
+      await logAuditEvent({
+        disputeId,
+        eventType: 'SUBMISSION_FAILED',
+        actor: 'SYSTEM',
+        payload: { action, reason: 'PayPal credentials are not configured in live mode.' }
+      });
+      return NextResponse.json(
+        { error: 'PayPal credentials are not configured for live submission.' },
+        { status: 503 }
+      );
+    }
 
     let paypalApiResponse: any = {
       simulated: true,
@@ -135,11 +184,17 @@ export async function POST(
             evidenceType: (decision?.evidenceTypeRequired as any) || 'PROOF_OF_FULFILLMENT',
             trackingNumber: dynamicTrackingNumber,
             carrierName: dynamicCarrierName,
-            notes: notesToSubmit
+            notes: notesToSubmit,
+            endpointUrl: actionLinks.provideEvidenceUrl
           });
         } catch (apiErr: any) {
-          console.warn('[Approval] Live PayPal call failed; recording fallback:', apiErr.message);
-          paypalApiResponse = { simulated: true, error: apiErr.message };
+          await logAuditEvent({
+            disputeId,
+            eventType: 'SUBMISSION_FAILED',
+            actor: 'SYSTEM',
+            payload: { action, error: apiErr.message }
+          });
+          return NextResponse.json({ error: 'PayPal evidence submission failed.' }, { status: 502 });
         }
       }
 
@@ -190,11 +245,17 @@ export async function POST(
           paypalApiResponse = await acceptPayPalDisputeClaim({
             disputeId,
             note: notesToSubmit,
-            acceptClaimType: 'REFUND'
+            acceptClaimType: 'REFUND',
+            endpointUrl: actionLinks.acceptClaimUrl
           });
         } catch (apiErr: any) {
-          console.warn('[Approval] Live PayPal accept call failed; recording fallback:', apiErr.message);
-          paypalApiResponse = { simulated: true, error: apiErr.message };
+          await logAuditEvent({
+            disputeId,
+            eventType: 'SUBMISSION_FAILED',
+            actor: 'SYSTEM',
+            payload: { action, error: apiErr.message }
+          });
+          return NextResponse.json({ error: 'PayPal claim acceptance failed.' }, { status: 502 });
         }
       }
 

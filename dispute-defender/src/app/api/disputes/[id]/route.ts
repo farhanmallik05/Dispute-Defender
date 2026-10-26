@@ -52,7 +52,7 @@ export async function GET(
         ...decisionRecord,
         evidenceChecklist: JSON.parse(decisionRecord.evidenceChecklist || '[]')
       } : null,
-      auditHistory: auditHistory.map(a => ({
+      auditHistory: auditHistory.map((a: any) => ({
         ...a,
         payload: JSON.parse(a.payload || '{}')
       }))
