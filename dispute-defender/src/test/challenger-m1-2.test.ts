@@ -138,8 +138,10 @@ async function runEmpiricalChallenges() {
   // =========================================================================
 
   await test('1.1 Dynamic Carrier Sourcing: PP-D-27801 uses FedEx 122533485', async () => {
-    // Reset PP-D-27801 to AWAITING_APPROVAL first
-    await db.update(disputes).set({ status: 'AWAITING_APPROVAL' }).where(eq(disputes.id, 'PP-D-27801'));
+    await setupDispute('PP-D-27801', [
+      { rel: 'provide-evidence', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-D-27801/provide-evidence', method: 'POST' },
+      { rel: 'accept-claim', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-D-27801/accept-claim', method: 'POST' }
+    ], [{ carrier: 'FEDEX', tracking_number: '122533485', status: 'DELIVERED' }]);
 
     const req = new Request('http://localhost/api/disputes/PP-D-27801/approve', {
       method: 'POST',
@@ -155,8 +157,10 @@ async function runEmpiricalChallenges() {
   });
 
   await test('1.2 Dynamic Carrier Sourcing: PP-D-27803 uses USPS 9400111899562534567890 (NEVER FedEx)', async () => {
-    // Reset PP-D-27803 to AWAITING_APPROVAL
-    await db.update(disputes).set({ status: 'AWAITING_APPROVAL' }).where(eq(disputes.id, 'PP-D-27803'));
+    await setupDispute('PP-D-27803', [
+      { rel: 'provide-evidence', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-D-27803/provide-evidence', method: 'POST' },
+      { rel: 'accept-claim', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-D-27803/accept-claim', method: 'POST' }
+    ], [{ carrier: 'USPS', tracking_number: '9400111899562534567890', status: 'DELIVERED' }]);
 
     const req = new Request('http://localhost/api/disputes/PP-D-27803/approve', {
       method: 'POST',
@@ -227,8 +231,11 @@ async function runEmpiricalChallenges() {
     assert(body.trackingNumber === 'DHL-987654321', `Expected tracking DHL-987654321, got ${body.trackingNumber}`);
   });
 
-  await test('1.5 Empty Tracking Seed (PP-D-27802): FIGHT returns undefined tracking, NEVER fallback to FedEx', async () => {
-    await db.update(disputes).set({ status: 'AWAITING_APPROVAL' }).where(eq(disputes.id, 'PP-D-27802'));
+  await test('1.5 Empty Tracking Seed (PP-D-27802): FIGHT is rejected without verified evidence', async () => {
+    await setupDispute('PP-D-27802', [
+      { rel: 'provide-evidence', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-D-27802/provide-evidence', method: 'POST' },
+      { rel: 'accept-claim', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-D-27802/accept-claim', method: 'POST' }
+    ], []);
 
     const req = new Request('http://localhost/api/disputes/PP-D-27802/approve', {
       method: 'POST',
@@ -237,14 +244,16 @@ async function runEmpiricalChallenges() {
     });
 
     const res = await approveRoute(req, { params: { id: 'PP-D-27802' } });
-    assert(res.status === 200, `Expected 200, got ${res.status}`);
+    assert(res.status === 422, `Expected 422, got ${res.status}`);
     const body = await res.json();
-    assert(!body.carrierName, `Empty tracking must NOT hallucinate carrierName, got ${body.carrierName}`);
-    assert(!body.trackingNumber, `Empty tracking must NOT hallucinate trackingNumber, got ${body.trackingNumber}`);
+    assert(body.error.includes('verified carrier tracking'), `Expected fail-closed evidence error, got ${body.error}`);
   });
 
   await test('1.6 Empty Tracking Seed (PP-D-27802): ACCEPT sets CLAIM_ACCEPTED and records audit trail', async () => {
-    await db.update(disputes).set({ status: 'AWAITING_APPROVAL' }).where(eq(disputes.id, 'PP-D-27802'));
+    await setupDispute('PP-D-27802', [
+      { rel: 'provide-evidence', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-D-27802/provide-evidence', method: 'POST' },
+      { rel: 'accept-claim', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/PP-D-27802/accept-claim', method: 'POST' }
+    ], []);
 
     const req = new Request('http://localhost/api/disputes/PP-D-27802/approve', {
       method: 'POST',
@@ -375,8 +384,15 @@ async function runEmpiricalChallenges() {
     const bodyFight = await resFight.json();
     assert(bodyFight.status === 'EVIDENCE_SUBMITTED', 'Status should be EVIDENCE_SUBMITTED');
 
-    // Reset dispute for ACCEPT test
-    await db.update(disputes).set({ status: 'AWAITING_APPROVAL' }).where(eq(disputes.id, 'PP-D-CHALLENGE-UNDERSCORES'));
+    // Recreate the approval state for the second one-time action.
+    await setupDispute(
+      'PP-D-CHALLENGE-UNDERSCORES',
+      [
+        { rel: 'provide_evidence', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/test/provide-evidence', method: 'POST' },
+        { rel: 'accept_claim', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/test/accept-claim', method: 'POST' }
+      ],
+      [{ carrier: 'FEDEX', tracking_number: '122533485', status: 'DELIVERED' }]
+    );
 
     // Test ACCEPT with underscored link
     const reqAccept = new Request('http://localhost/api/disputes/PP-D-CHALLENGE-UNDERSCORES/approve', {

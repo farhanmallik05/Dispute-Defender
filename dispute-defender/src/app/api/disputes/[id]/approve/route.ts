@@ -136,6 +136,9 @@ export async function POST(
     }
 
     const notesToSubmit = merchantEditedNotes || decision?.draftNotes || 'Evidence provided by seller.';
+    if (typeof notesToSubmit !== 'string' || notesToSubmit.length > 4000) {
+      return NextResponse.json({ error: 'Merchant notes must be a string of 4000 characters or fewer.' }, { status: 400 });
+    }
     const now = new Date().toISOString();
 
     // Log the merchant approval event with the exact notes
