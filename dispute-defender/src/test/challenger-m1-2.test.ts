@@ -364,8 +364,10 @@ async function runEmpiricalChallenges() {
 
   await test('2.4 HATEOAS Style Equivalence: Underscored links (provide_evidence & accept_claim) successfully permit both actions', async () => {
     // Both links provided with underscores
+    const underscoredFightId = 'PP-D-CHALLENGE-UNDERSCORES';
+    const underscoredAcceptId = 'PP-D-CHALLENGE-UNDERSCORES-ACCEPT';
     await setupDispute(
-      'PP-D-CHALLENGE-UNDERSCORES',
+      underscoredFightId,
       [
         { rel: 'provide_evidence', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/test/provide-evidence', method: 'POST' },
         { rel: 'accept_claim', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/test/accept-claim', method: 'POST' }
@@ -374,19 +376,19 @@ async function runEmpiricalChallenges() {
     );
 
     // Test FIGHT with underscored link
-    const reqFight = new Request('http://localhost/api/disputes/PP-D-CHALLENGE-UNDERSCORES/approve', {
+    const reqFight = new Request(`http://localhost/api/disputes/${underscoredFightId}/approve`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'FIGHT' })
     });
-    const resFight = await approveRoute(reqFight, { params: { id: 'PP-D-CHALLENGE-UNDERSCORES' } });
+    const resFight = await approveRoute(reqFight, { params: { id: underscoredFightId } });
     assert(resFight.status === 200, `Expected 200 for FIGHT with provide_evidence, got ${resFight.status}`);
     const bodyFight = await resFight.json();
     assert(bodyFight.status === 'EVIDENCE_SUBMITTED', 'Status should be EVIDENCE_SUBMITTED');
 
     // Recreate the approval state for the second one-time action.
     await setupDispute(
-      'PP-D-CHALLENGE-UNDERSCORES',
+      underscoredAcceptId,
       [
         { rel: 'provide_evidence', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/test/provide-evidence', method: 'POST' },
         { rel: 'accept_claim', href: 'https://api-m.sandbox.paypal.com/v1/customer/disputes/test/accept-claim', method: 'POST' }
@@ -395,12 +397,12 @@ async function runEmpiricalChallenges() {
     );
 
     // Test ACCEPT with underscored link
-    const reqAccept = new Request('http://localhost/api/disputes/PP-D-CHALLENGE-UNDERSCORES/approve', {
+    const reqAccept = new Request(`http://localhost/api/disputes/${underscoredAcceptId}/approve`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ action: 'ACCEPT' })
     });
-    const resAccept = await approveRoute(reqAccept, { params: { id: 'PP-D-CHALLENGE-UNDERSCORES' } });
+    const resAccept = await approveRoute(reqAccept, { params: { id: underscoredAcceptId } });
     assert(resAccept.status === 200, `Expected 200 for ACCEPT with accept_claim, got ${resAccept.status}`);
     const bodyAccept = await resAccept.json();
     assert(bodyAccept.status === 'CLAIM_ACCEPTED', 'Status should be CLAIM_ACCEPTED');

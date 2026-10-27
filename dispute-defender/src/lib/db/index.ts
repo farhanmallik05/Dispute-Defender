@@ -24,7 +24,7 @@ if (dbPath !== ':memory:') {
 }
 
 const sqlite = new DatabaseSync(dbPath);
-sqlite.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
+sqlite.exec('PRAGMA busy_timeout = 10000; PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
 sqlite.exec(`
   CREATE TABLE IF NOT EXISTS disputes (
     id TEXT PRIMARY KEY,
