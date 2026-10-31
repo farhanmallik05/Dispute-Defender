@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -17,43 +17,80 @@ import {
   DollarSign,
   Package,
   Truck,
-  UserCheck
+  UserCheck,
+  WifiOff,
+  Sparkles
 } from 'lucide-react';
+import { useResilience } from '@/context/ResilienceContext';
+import { DossierSkeleton, ErrorStateCard } from '@/components/common/StateViews';
 
 export default function DisputeReviewPage({ params }: { params: { id: string } }) {
   const disputeId = params.id;
   const router = useRouter();
+  const { isOnline, simulatedState, triggerSuccessToast, isSlowNetwork } = useResilience();
 
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<any>(null);
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [submissionResult, setSubmissionResult] = useState<any>(null);
   const [showRedactionDiff, setShowRedactionDiff] = useState(false);
 
-  useEffect(() => {
-    async function loadDispute() {
-      try {
-        const res = await fetch(`/api/disputes/${disputeId}`);
-        const json = await res.json();
-        if (json.dispute) {
-          setData(json);
-          setNotes(json.decision?.draftNotes || '');
-        }
-      } catch (err) {
-        console.error('Failed to load dispute details:', err);
-      } finally {
+  const loadDispute = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    if (simulatedState === 'ERROR') {
+      setTimeout(() => {
+        setError('Simulated 500: Failed to retrieve dispute context dossier from upstream.');
         setLoading(false);
-      }
+      }, 500);
+      return;
     }
+
+    if (simulatedState === 'SLOW') {
+      await new Promise(r => setTimeout(r, 2200));
+    }
+
+    try {
+      const res = await fetch(`/api/disputes/${disputeId}`, { cache: 'no-store' });
+      if (!res.ok) {
+        throw new Error(`Failed to load dispute: HTTP ${res.status}`);
+      }
+      const json = await res.json();
+      if (json.dispute) {
+        setData(json);
+        setNotes(json.decision?.draftNotes || '');
+      } else {
+        throw new Error('Dispute record not found in system.');
+      }
+    } catch (err: any) {
+      console.error('Failed to load dispute details:', err);
+      setError(err.message || 'Error communicating with dispute storage.');
+    } finally {
+      setLoading(false);
+    }
+  }, [disputeId, simulatedState]);
+
+  useEffect(() => {
     loadDispute();
-  }, [disputeId]);
+  }, [loadDispute]);
 
   const handleApprove = async (action: 'FIGHT' | 'ACCEPT') => {
+    if (!isOnline) {
+      triggerSuccessToast('Action blocked: Cannot submit to PayPal while offline.');
+      return;
+    }
+
     setSubmitting(true);
     setSubmissionResult(null);
 
     try {
+      if (simulatedState === 'SLOW') {
+        await new Promise(r => setTimeout(r, 2500));
+      }
+
       const res = await fetch(`/api/disputes/${disputeId}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -65,6 +102,14 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
 
       const result = await res.json();
       setSubmissionResult(result);
+
+      if (result.success) {
+        triggerSuccessToast(
+          action === 'FIGHT'
+            ? `Evidence Filed: Submitted response to PayPal for ${disputeId}`
+            : `Claim Accepted: Refund issued and $15 penalty fee avoided for ${disputeId}`
+        );
+      }
 
       // Refresh data to reflect status update
       const refreshRes = await fetch(`/api/disputes/${disputeId}`);
@@ -78,11 +123,23 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
     }
   };
 
-  if (loading) {
+  const isSimulatedLoading = simulatedState === 'LOADING';
+  if (loading || isSimulatedLoading) {
+    return <DossierSkeleton />;
+  }
+
+  if (error || simulatedState === 'ERROR') {
     return (
-      <div className="py-24 text-center">
-        <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-3" />
-        <p className="text-slate-600 font-medium">Assembling dispute dossier & redaction logs...</p>
+      <div className="py-12 space-y-4">
+        <Link href="/" className="inline-flex items-center text-xs font-semibold text-blue-600 hover:underline">
+          <ArrowLeft className="w-4 h-4 mr-1" /> Back to Queue
+        </Link>
+        <ErrorStateCard
+          title="Failed to Load Dispute Dossier"
+          message={error || 'Unable to retrieve compiled evidence packet from database.'}
+          onRetry={loadDispute}
+          retrying={loading}
+        />
       </div>
     );
   }
@@ -343,25 +400,55 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
             {/* Submission Status Alerts */}
             {submissionResult && (
               <div
-                className={`p-4 rounded-lg text-xs ${
+                className={`p-4 rounded-xl text-xs space-y-2 ${
                   submissionResult.success
-                    ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-                    : 'bg-red-50 border border-red-200 text-red-800'
+                    ? 'bg-emerald-50 border border-emerald-200 text-emerald-900'
+                    : 'bg-red-50 border border-red-200 text-red-900'
                 }`}
               >
                 {submissionResult.success ? (
                   <div>
-                    <p className="font-bold flex items-center">
-                      <CheckCircle2 className="w-4 h-4 mr-1.5" />
-                      Action Successfully Filed with PayPal!
+                    <div className="flex items-center space-x-1.5 font-bold text-sm text-emerald-800">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>Evidence Packet Successfully Filed with PayPal!</span>
+                    </div>
+                    <p className="mt-1 text-slate-700">
+                      Dispute status updated to <strong>{submissionResult.status}</strong>. Evidence is verified and locked in the PayPal Resolution Center.
                     </p>
-                    <p className="mt-1">
-                      Status moved to: <strong>{submissionResult.status}</strong>. Evidence visible in PayPal Resolution Center.
-                    </p>
+                    <div className="pt-2 flex items-center gap-3">
+                      <Link
+                        href="/"
+                        className="inline-flex items-center text-xs font-bold text-blue-600 hover:underline"
+                      >
+                        <ArrowLeft className="w-3.5 h-3.5 mr-1" /> Return to Queue
+                      </Link>
+                      <Link
+                        href="/audit"
+                        className="inline-flex items-center text-xs font-semibold text-slate-600 hover:text-slate-900"
+                      >
+                        Inspect Audit Trail &rarr;
+                      </Link>
+                    </div>
                   </div>
                 ) : (
-                  <p className="font-bold">Error: {submissionResult.error}</p>
+                  <div className="space-y-1">
+                    <p className="font-bold flex items-center text-red-800">
+                      <AlertTriangle className="w-4 h-4 mr-1.5 text-red-600" />
+                      Submission Rejected by PayPal
+                    </p>
+                    <p className="text-red-700">{submissionResult.error}</p>
+                  </div>
                 )}
+              </div>
+            )}
+
+            {/* Offline Safeguard Alert */}
+            {!isOnline && !isSubmitted && !isAccepted && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-800 flex items-start space-x-2">
+                <WifiOff className="w-4 h-4 shrink-0 text-red-600 mt-0.5" />
+                <p>
+                  <strong>Offline Protection:</strong> PayPal REST submissions are blocked while disconnected. Your drafted rebuttal and evidence checklist are preserved.
+                </p>
               </div>
             )}
 
@@ -370,17 +457,19 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
               <div className="space-y-3 pt-2">
                 <button
                   onClick={() => handleApprove('FIGHT')}
-                  disabled={submitting}
-                  className="w-full py-3 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm transition-colors flex items-center justify-center disabled:opacity-50"
+                  disabled={submitting || !isOnline}
+                  className="w-full py-3 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ShieldCheck className="w-4 h-4 mr-2" />
-                  {submitting ? 'Submitting to PayPal...' : 'Approve & Submit Evidence'}
+                  {submitting 
+                    ? isSlowNetwork ? 'Submitting to PayPal (High Latency)...' : 'Submitting to PayPal...' 
+                    : !isOnline ? 'Offline — Reconnect to Submit' : 'Approve & Submit Evidence'}
                 </button>
 
                 <button
                   onClick={() => handleApprove('ACCEPT')}
-                  disabled={submitting}
-                  className="w-full py-2.5 px-4 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors flex items-center justify-center disabled:opacity-50"
+                  disabled={submitting || !isOnline}
+                  className="w-full py-2.5 px-4 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Accept Claim & Refund Buyer
                 </button>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { 
   ShieldCheck, 
@@ -8,46 +8,107 @@ import {
   RefreshCw, 
   DollarSign, 
   Layers,
-  LayoutGrid
+  LayoutGrid,
+  Sparkles,
+  AlertTriangle
 } from 'lucide-react';
 import DisputeGrid, { DisputeGridRow } from '@/components/queue/DisputeGrid';
+import { 
+  MetricCardSkeleton, 
+  GridRowSkeleton, 
+  EmptyStateCard, 
+  ErrorStateCard 
+} from '@/components/common/StateViews';
+import { useResilience } from '@/context/ResilienceContext';
 
 export default function DisputeQueuePage() {
+  const { simulatedState, triggerSuccessToast, isSlowNetwork } = useResilience();
   const [disputes, setDisputes] = useState<DisputeGridRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [filter, setFilter] = useState<'ALL' | 'AWAITING_APPROVAL' | 'SUBMITTED' | 'RESOLVED'>('ALL');
   const [viewMode, setViewMode] = useState<'AG_GRID' | 'COMPACT'>('AG_GRID');
+  const [slowLatencyWarning, setSlowLatencyWarning] = useState(false);
 
-  const fetchDisputes = async () => {
+  const fetchDisputes = useCallback(async (isRetry = false) => {
+    setLoading(true);
+    setError(null);
+    setSlowLatencyWarning(false);
+    const start = Date.now();
+
+    // Check for simulated error
+    if (simulatedState === 'ERROR') {
+      setTimeout(() => {
+        setError('Simulated 500: PayPal Gateway API Gateway Timeout (HTTP 504)');
+        setLoading(false);
+      }, 500);
+      return;
+    }
+
+    // Check for simulated slow network
+    if (simulatedState === 'SLOW') {
+      setSlowLatencyWarning(true);
+      await new Promise(r => setTimeout(r, 2600));
+    }
+
     try {
-      const res = await fetch('/api/disputes');
+      const res = await fetch('/api/disputes', { cache: 'no-store' });
+      const elapsed = Date.now() - start;
+      if (elapsed > 2000) {
+        setSlowLatencyWarning(true);
+      }
+
+      if (!res.ok) {
+        throw new Error(`Failed to load disputes: HTTP ${res.status}`);
+      }
+
       const data = await res.json();
-      if (data.disputes) {
+      if (simulatedState === 'EMPTY') {
+        setDisputes([]);
+      } else if (data.disputes) {
         setDisputes(data.disputes);
       }
-    } catch (err) {
+
+      if (isRetry) {
+        triggerSuccessToast('Dispute queue refreshed successfully!');
+      }
+    } catch (err: any) {
       console.error('Failed to load disputes:', err);
+      setError(err.message || 'Network communication error connecting to dispute pipeline.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [simulatedState, triggerSuccessToast]);
 
   useEffect(() => {
     fetchDisputes();
-  }, []);
+  }, [fetchDisputes]);
 
   const handleSync = async () => {
     setSyncing(true);
+    setError(null);
     try {
-      await fetch('/api/disputes/sync', { method: 'POST' });
+      if (simulatedState === 'SLOW') {
+        await new Promise(r => setTimeout(r, 2000));
+      }
+      const res = await fetch('/api/disputes/sync', { method: 'POST' });
+      if (!res.ok) {
+        throw new Error(`Sync failed: HTTP ${res.status}`);
+      }
       await fetchDisputes();
-    } catch (err) {
+      triggerSuccessToast('Sandbox Sync Complete: PayPal disputes retrieved & triaged');
+    } catch (err: any) {
       console.error('Sync failed:', err);
+      setError(err.message || 'Dispute synchronization failed.');
     } finally {
       setSyncing(false);
     }
   };
+
+  const isSimulatedLoading = simulatedState === 'LOADING';
+  const showLoading = loading || isSimulatedLoading;
+  const showError = Boolean(error || simulatedState === 'ERROR');
 
   const filteredDisputes = disputes.filter(d => {
     if (filter === 'ALL') return true;
@@ -110,40 +171,66 @@ export default function DisputeQueuePage() {
         </div>
       </div>
 
-      {/* Metrics Header Grid */}
+      {/* Slow Network In-Page Alert */}
+      {(slowLatencyWarning || isSlowNetwork) && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-xl flex items-center justify-between text-xs font-medium">
+          <div className="flex items-center space-x-2">
+            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>High latency detected on network path to PayPal Gateway. Requests are being buffered safely.</span>
+          </div>
+          <button
+            onClick={() => fetchDisputes(true)}
+            className="text-amber-900 font-bold hover:underline shrink-0 ml-2"
+          >
+            Retry Sync
+          </button>
+        </div>
+      )}
+
+      {/* Metrics Header Grid (Skeletons when loading) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-medium uppercase text-slate-500">Active Capital at Risk</p>
-            <p className="text-2xl font-bold text-slate-900 mt-1">${totalAtRisk.toFixed(2)}</p>
-            <p className="text-xs text-slate-400 mt-1">Across {disputes.length} open disputes</p>
-          </div>
-          <div className="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-            <DollarSign className="w-6 h-6" />
-          </div>
-        </div>
+        {showLoading ? (
+          <>
+            <MetricCardSkeleton />
+            <MetricCardSkeleton />
+            <MetricCardSkeleton />
+          </>
+        ) : (
+          <>
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium uppercase text-slate-500">Active Capital at Risk</p>
+                <p className="text-2xl font-bold text-slate-900 mt-1">${totalAtRisk.toFixed(2)}</p>
+                <p className="text-xs text-slate-400 mt-1">Across {disputes.length} open disputes</p>
+              </div>
+              <div className="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                <DollarSign className="w-6 h-6" />
+              </div>
+            </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-medium uppercase text-slate-500">Awaiting 1-Click Approval</p>
-            <p className="text-2xl font-bold text-amber-600 mt-1">{awaitingCount}</p>
-            <p className="text-xs text-slate-400 mt-1">Triage dossiers prepared</p>
-          </div>
-          <div className="w-12 h-12 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
-            <Clock className="w-6 h-6" />
-          </div>
-        </div>
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium uppercase text-slate-500">Awaiting 1-Click Approval</p>
+                <p className="text-2xl font-bold text-amber-600 mt-1">{awaitingCount}</p>
+                <p className="text-xs text-slate-400 mt-1">Triage dossiers prepared</p>
+              </div>
+              <div className="w-12 h-12 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+                <Clock className="w-6 h-6" />
+              </div>
+            </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-medium uppercase text-slate-500">Evidence Packets Filed</p>
-            <p className="text-2xl font-bold text-emerald-600 mt-1">{submittedCount}</p>
-            <p className="text-xs text-slate-400 mt-1">Live in PayPal Resolution Center</p>
-          </div>
-          <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <ShieldCheck className="w-6 h-6" />
-          </div>
-        </div>
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p className="text-xs font-medium uppercase text-slate-500">Evidence Packets Filed</p>
+                <p className="text-2xl font-bold text-emerald-600 mt-1">{submittedCount}</p>
+                <p className="text-xs text-slate-400 mt-1">Live in PayPal Resolution Center</p>
+              </div>
+              <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Filter Tabs */}
@@ -182,8 +269,31 @@ export default function DisputeQueuePage() {
         </button>
       </div>
 
-      {/* Primary AG Grid View or Standard View */}
-      {viewMode === 'AG_GRID' ? (
+      {/* Main View Area: Error State -> Loading Skeletons -> Empty State -> Grid View */}
+      {showError ? (
+        <ErrorStateCard
+          title="Dispute Queue Synchronization Error"
+          message={error || 'Unable to communicate with the local dispute store or PayPal API.'}
+          onRetry={() => fetchDisputes(true)}
+          retrying={loading}
+        />
+      ) : showLoading ? (
+        <GridRowSkeleton count={5} />
+      ) : disputes.length === 0 || filteredDisputes.length === 0 ? (
+        <EmptyStateCard
+          title={disputes.length === 0 ? "No Active Disputes in Queue" : `No Disputes Matching Filter (${filter})`}
+          description={
+            disputes.length === 0 
+              ? "Your PayPal merchant account is in good standing. No customer disputes, claims, or chargebacks currently require response."
+              : `There are currently 0 disputes matching the "${filter}" filter. Switch to "All Disputes" or sync fresh chargebacks from PayPal.`
+          }
+          actionLabel="Sync from PayPal Sandbox"
+          onAction={handleSync}
+          loading={syncing}
+          secondaryActionLabel="Reset Filter View"
+          onSecondaryAction={() => setFilter('ALL')}
+        />
+      ) : viewMode === 'AG_GRID' ? (
         <DisputeGrid disputes={filteredDisputes} loading={loading} />
       ) : (
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden p-6 text-sm">

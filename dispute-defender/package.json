@@ -17,9 +17,10 @@
     "test:redactor": "tsx src/test/redactor.test.ts",
     "test:carrier": "tsx src/test/carrier-detector.test.ts",
     "test:health": "tsx src/test/health.test.ts",
+    "test:resilience": "tsx src/test/resilience.test.ts",
     "test:e2e": "tsx src/test/e2e-runner.ts",
     "test:challenger": "tsx src/test/challenger-m1-2.test.ts",
-    "test:all": "npm run test:redactor && npm run test:carrier && npm run test:health && npm run test:e2e && npm run test:challenger"
+    "test:all": "npm run test:redactor && npm run test:carrier && npm run test:health && npm run test:resilience && npm run test:e2e && npm run test:challenger"
   },
   "keywords": [
     "paypal",
