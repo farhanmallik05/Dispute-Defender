@@ -292,10 +292,47 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
             </p>
 
             <div className="space-y-2">
-              <label className="text-xs font-bold uppercase text-slate-600">Draft Rebuttal Note (Editable)</label>
+              <div className="flex justify-between items-center">
+                <label className="text-xs font-bold uppercase text-slate-600">Draft Rebuttal Note (Editable)</label>
+                <span className={`text-[11px] font-mono font-semibold ${notes.length > 3800 ? 'text-red-600' : notes.length > 3000 ? 'text-amber-600' : 'text-slate-400'}`}>
+                  {notes.length} / 4000
+                </span>
+              </div>
+
+              {/* 1-Click Legal Templates */}
+              {!isSubmitted && !isAccepted && (
+                <div className="space-y-1">
+                  <span className="text-[10px] uppercase font-bold text-slate-400">1-Click Legal Templates:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setNotes(prev => prev ? `${prev}\n\nCarrier tracking confirms package delivered to buyer address prior to dispute filing date. Fulfilled under PayPal Seller Protection.` : 'Carrier tracking confirms package delivered to buyer address prior to dispute filing date. Fulfilled under PayPal Seller Protection.')}
+                      className="px-2 py-0.5 text-[10px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded border border-slate-200 transition-colors"
+                    >
+                      + Proof of Delivery
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setNotes(prev => prev ? `${prev}\n\nItem delivered in brand new condition matching catalog specifications. Buyer has not initiated an authorized return under our stated store policy.` : 'Item delivered in brand new condition matching catalog specifications. Buyer has not initiated an authorized return under our stated store policy.')}
+                      className="px-2 py-0.5 text-[10px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded border border-slate-200 transition-colors"
+                    >
+                      + Item As Described
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setNotes(prev => prev ? `${prev}\n\nOrder placed with matching billing address and delivered to verified shipping address. Timestamps confirm merchant fulfillment.` : 'Order placed with matching billing address and delivered to verified shipping address. Timestamps confirm merchant fulfillment.')}
+                      className="px-2 py-0.5 text-[10px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded border border-slate-200 transition-colors"
+                    >
+                      + Authorized Order
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <textarea
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
+                maxLength={4000}
                 rows={6}
                 disabled={isSubmitted || isAccepted}
                 className="w-full text-xs font-mono p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-slate-100 disabled:text-slate-500"
