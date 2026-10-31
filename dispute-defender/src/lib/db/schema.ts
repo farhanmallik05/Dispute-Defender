@@ -15,6 +15,8 @@ export const disputes = sqliteTable('disputes', {
   transactionId: text('transaction_id'),
   allowedOptions: text('allowed_options'), // JSON stringified array
   rawJson: text('raw_json').notNull(),
+  outcomeCode: text('outcome_code'), // RESOLVED_SELLER_FAVOUR | RESOLVED_BUYER_FAVOUR | CANCELED_BY_BUYER
+  resolvedAt: text('resolved_at'),
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull()
 });

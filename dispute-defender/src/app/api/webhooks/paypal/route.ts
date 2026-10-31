@@ -81,10 +81,16 @@ export async function POST(request: Request) {
       });
 
       if (eventType === 'CUSTOMER.DISPUTE.RESOLVED') {
+        const rawOutcome = (disputeResource as any).dispute_outcome;
+        const outcomeCode = rawOutcome?.outcome_code || 'RESOLVED_SELLER_FAVOUR';
+        const resolvedAt = rawOutcome?.resolve_time || new Date().toISOString();
+
         await db
           .update(disputes)
           .set({
             status: 'RESOLVED',
+            outcomeCode,
+            resolvedAt,
             rawJson: JSON.stringify(disputeResource),
             updatedAt: new Date().toISOString()
           })
@@ -95,8 +101,44 @@ export async function POST(request: Request) {
           eventId: event.id,
           eventType: 'DISPUTE_RESOLVED',
           actor: 'SYSTEM',
-          payload: { eventType, status: disputeResource.status }
+          payload: { 
+            eventType, 
+            status: disputeResource.status,
+            outcomeCode,
+            resolvedAt
+          }
         });
+      } else if (eventType === 'CUSTOMER.DISPUTE.UPDATED') {
+        const existing = await db
+          .select()
+          .from(disputes)
+          .where(eq(disputes.id, disputeId))
+          .get();
+
+        if (existing && (existing.status === 'EVIDENCE_SUBMITTED' || existing.status === 'CLAIM_ACCEPTED')) {
+          await db
+            .update(disputes)
+            .set({
+              lifeCycleStage: disputeResource.dispute_life_cycle_stage || existing.lifeCycleStage,
+              allowedOptions: JSON.stringify(disputeResource.allowed_response_options || []),
+              rawJson: JSON.stringify(disputeResource),
+              updatedAt: new Date().toISOString()
+            })
+            .where(eq(disputes.id, disputeId));
+
+          await logAuditEvent({
+            disputeId,
+            eventId: event.id,
+            eventType: 'DISPUTE_UPDATED',
+            actor: 'SYSTEM',
+            payload: {
+              stage: disputeResource.dispute_life_cycle_stage,
+              status: disputeResource.status
+            }
+          });
+        } else {
+          await processDisputePipeline(disputeResource);
+        }
       } else {
         // Run through the pipeline. Missing carrier data remains missing; the
         // pipeline must not infer a delivery record.

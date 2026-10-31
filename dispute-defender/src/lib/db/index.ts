@@ -37,6 +37,8 @@ sqlite.exec(`
     transaction_id TEXT,
     allowed_options TEXT,
     raw_json TEXT NOT NULL,
+    outcome_code TEXT,
+    resolved_at TEXT,
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
   );
@@ -78,6 +80,8 @@ sqlite.exec(`
     received_at TEXT NOT NULL
   );
 `);
+try { sqlite.exec('ALTER TABLE disputes ADD COLUMN outcome_code TEXT;'); } catch {}
+try { sqlite.exec('ALTER TABLE disputes ADD COLUMN resolved_at TEXT;'); } catch {}
 
 const columnsFor = (table: string): Set<string> => new Set(
   (sqlite.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>)

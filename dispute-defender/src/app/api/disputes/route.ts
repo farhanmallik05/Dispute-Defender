@@ -17,6 +17,8 @@ export async function GET() {
         dueDate: disputes.dueDate,
         lifeCycleStage: disputes.lifeCycleStage,
         transactionId: disputes.transactionId,
+        outcomeCode: disputes.outcomeCode,
+        resolvedAt: disputes.resolvedAt,
         createdAt: disputes.createdAt,
         updatedAt: disputes.updatedAt,
         recommendation: triageDecisions.recommendation,
