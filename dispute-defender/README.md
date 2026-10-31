@@ -120,22 +120,25 @@ PORT=8000
 `INTEGRITY_MODE=demo` is only for local deterministic fixtures. In any other mode, unsigned webhooks are rejected, PayPal credentials are required for approval, and failed PayPal calls do not update local status. Tracking is never fabricated: use `npm run seed` for explicit local fixtures or provide real integration data.
 
 ### 4. Run the Test Suites
-Validate the Zero-Trust PII Redactor:
+Run the unified test runner covering unit, redactor, carrier detection, and end-to-end pipeline validation:
 ```bash
+npm run test:all
+```
+Or run individual test suites:
+```bash
+# Zero-Trust PII Redactor
 npm run test:redactor
+
+# Carrier Tracking Intelligence & Auto-Detection
+npm run test:carrier
+
+# Render Durable Pipeline Tasks
+npm run test:workflows
 
 # Full local pipeline verification (uses an isolated SQLite database)
 DATABASE_URL=./e2e.sqlite INTEGRITY_MODE=demo npm run test:e2e
 ```
-Expected output:
-```
-✓ testEmailRedaction: PASS
-✓ testPhoneRedaction: PASS
-✓ testAddressRedaction: PASS
-✓ testIpRedaction: PASS
-✓ testFullContextBundleSanitization: PASS
-All 5 redactor test suites passed successfully!
-```
+All test suites run deterministically in sub-second time.
 
 ### 5. Build & Start the Application
 ```bash
@@ -173,6 +176,31 @@ Visit **http://localhost:8000** in your browser.
 ### 4. Immutable Audit Trail (`/audit`)
 - Real-time event log recording `WEBHOOK_RECEIVED`, `CONTEXT_AGGREGATED`, `PII_REDACTED`, `TRIAGE_EVALUATED`, `MERCHANT_APPROVED`, and `PAYPAL_EVIDENCE_SUBMITTED`.
 - Expandable JSON payload inspector for compliance officers and fraud auditors.
+
+### 5. Self-Diagnostic Health & Observability API (`/api/health`)
+- Real-time system monitoring checking SQLite database connectivity, WAL mode health, record counts, PayPal sandbox authentication parameters, and AI Triage engine readiness.
+- Returns standard HTTP 200/503 health probe JSON with uptime and sub-millisecond response latency.
+
+---
+
+## 📸 Visual Showcase & Presentation Assets
+
+Dispute Defender includes 10 production-quality high-resolution assets generated specifically for the Devpost submission, pitch deck, and documentation:
+
+| # | Asset | Description | Path |
+| :-: | :--- | :--- | :--- |
+| **01** | **Hero Brand Banner** | Cyber-defense fintech aesthetic highlighting autonomous PayPal dispute defense | [`public/images/01_hero_banner.jpg`](./public/images/01_hero_banner.jpg) |
+| **02** | **Command Center Queue** | AG Grid Enterprise table with real-time SLA urgency badges and capital at risk | [`public/images/02_command_center_queue.jpg`](./public/images/02_command_center_queue.jpg) |
+| **03** | **1-Click Review Dossier** | Merchant approval gate displaying AI verdict, fact-checked evidence, and notes | [`public/images/03_review_dossier.jpg`](./public/images/03_review_dossier.jpg) |
+| **04** | **PII Redaction Diff Modal** | Zero-trust side-by-side modal showing buyer email, phone, and address redaction | [`public/images/04_redaction_diff_modal.jpg`](./public/images/04_redaction_diff_modal.jpg) |
+| **05** | **Resolution Center Proof** | Live PayPal sandbox verification demonstrating evidence submitted to REST API | [`public/images/05_paypal_resolution_center_proof.jpg`](./public/images/05_paypal_resolution_center_proof.jpg) |
+| **06** | **Accept Claim Defense** | Automated claim acceptance recommendation when evidence is lacking to save fees | [`public/images/06_accept_claim_defense.jpg`](./public/images/06_accept_claim_defense.jpg) |
+| **07** | **AG Grid Risk Matrix** | Reason breakdown analytics, capital defended metrics, and dispute playbooks | [`public/images/07_risk_analytics_matrix.jpg`](./public/images/07_risk_analytics_matrix.jpg) |
+| **08** | **Immutable Audit Trail** | Chronological timeline of cryptographically verified webhook and decision events | [`public/images/08_immutable_audit_trail.jpg`](./public/images/08_immutable_audit_trail.jpg) |
+| **09** | **Architecture Pipeline** | 5-stage architecture diagram illustrating the Human-in-the-Loop workflow | [`public/images/09_architecture_pipeline.jpg`](./public/images/09_architecture_pipeline.jpg) |
+| **10** | **Devpost Showcase Poster** | Complete project infographic and pitch poster summarizing key innovations | [`public/images/10_devpost_showcase_poster.jpg`](./public/images/10_devpost_showcase_poster.jpg) |
+
+See [`../plan/08_VISUAL_ASSETS_SHOWCASE.md`](../plan/08_VISUAL_ASSETS_SHOWCASE.md) for the detailed presentation guide.
 
 ---
 

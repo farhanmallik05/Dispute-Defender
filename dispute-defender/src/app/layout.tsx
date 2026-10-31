@@ -41,10 +41,15 @@ export default function RootLayout({
                 Audit Trail
               </Link>
               <div className="h-4 w-px bg-slate-200" />
-              <div className="flex items-center text-xs text-slate-500">
+              <Link
+                href="/api/health"
+                target="_blank"
+                title="View Live System Health & Diagnostics"
+                className="flex items-center text-xs text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors px-2.5 py-1 rounded-full border border-emerald-200 font-mono"
+              >
                 <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse" />
-                Pipeline Active
-              </div>
+                Live Health
+              </Link>
             </nav>
           </div>
         </header>
@@ -56,7 +61,13 @@ export default function RootLayout({
         <footer className="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500">
           <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
             <div>Dispute Defender · Open Source PayPal AI Agent · MIT License</div>
-            <div className="text-slate-400">Render Workflows · AG Grid · APIMatic · Vercel AI SDK</div>
+            <div className="flex items-center gap-3 text-slate-400">
+              <Link href="/api/health" target="_blank" className="hover:text-blue-600 transition-colors">
+                API Diagnostics
+              </Link>
+              <span>·</span>
+              <span>Render Workflows · AG Grid · APIMatic · Vercel AI SDK</span>
+            </div>
           </div>
         </footer>
       </body>
