@@ -21,6 +21,7 @@ export type AuditEventType =
   | 'PAYPAL_CLAIM_ACCEPTED'
   | 'SUBMISSION_FAILED'
   | 'SANDBOX_ADJUDICATED'
+  | 'DISPUTE_UPDATED'
   | 'DISPUTE_RESOLVED';
 
 export async function logAuditEvent(params: {

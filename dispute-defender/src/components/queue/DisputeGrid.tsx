@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useMemo, useRef, useState, useCallback } from 'react';
+import React, { useMemo, useRef, useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AgGridReact } from 'ag-grid-react';
-import { ColDef, ICellRendererParams } from 'ag-grid-community';
+import { ColDef, ICellRendererParams, CellKeyDownEvent, RowDoubleClickedEvent } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
-import { Clock, ArrowRight, Download, Search, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { Clock, ArrowRight, Download, Search, ShieldAlert, CheckCircle2, Filter, Keyboard } from 'lucide-react';
 
 export interface DisputeGridRow {
   id: string;
@@ -28,8 +29,40 @@ interface DisputeGridProps {
 }
 
 export default function DisputeGrid({ disputes, loading }: DisputeGridProps) {
+  const router = useRouter();
   const gridRef = useRef<AgGridReact<DisputeGridRow>>(null);
   const [quickFilterText, setQuickFilterText] = useState('');
+  const [activeTab, setActiveTab] = useState<'ALL' | 'AWAITING_APPROVAL' | 'CRITICAL' | 'EVIDENCE_SUBMITTED' | 'RESOLVED'>('ALL');
+
+  // Filter disputes according to active quick tab
+  const filteredDisputes = useMemo(() => {
+    if (activeTab === 'ALL') return disputes;
+    if (activeTab === 'AWAITING_APPROVAL') return disputes.filter(d => d.status === 'AWAITING_APPROVAL');
+    if (activeTab === 'EVIDENCE_SUBMITTED') return disputes.filter(d => d.status === 'EVIDENCE_SUBMITTED');
+    if (activeTab === 'RESOLVED') return disputes.filter(d => d.status === 'RESOLVED' || d.status === 'CLAIM_ACCEPTED');
+    if (activeTab === 'CRITICAL') {
+      const now = Date.now();
+      return disputes.filter(d => {
+        if (!d.dueDate) return false;
+        const diffHours = (new Date(d.dueDate).getTime() - now) / (1000 * 60 * 60);
+        return diffHours > 0 && diffHours <= 24;
+      });
+    }
+    return disputes;
+  }, [disputes, activeTab]);
+
+  const handleRowDoubleClicked = useCallback((e: RowDoubleClickedEvent<DisputeGridRow>) => {
+    if (e.data?.id) {
+      router.push(`/disputes/${e.data.id}`);
+    }
+  }, [router]);
+
+  const handleCellKeyDown = useCallback((e: CellKeyDownEvent<DisputeGridRow>) => {
+    const keyboardEvent = e.event as unknown as KeyboardEvent;
+    if (keyboardEvent?.key === 'Enter' && e.data?.id) {
+      router.push(`/disputes/${e.data.id}`);
+    }
+  }, [router]);
 
   // 1. Urgency / Due Date Renderer
   const UrgencyCellRenderer = useCallback((params: ICellRendererParams<DisputeGridRow>) => {
@@ -212,31 +245,72 @@ export default function DisputeGrid({ disputes, loading }: DisputeGridProps) {
 
   return (
     <div className="space-y-3">
-      {/* Search and Export Bar */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-slate-50 p-3 rounded-lg border border-slate-200">
-        <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
-          <input
-            type="text"
-            value={quickFilterText}
-            onChange={e => setQuickFilterText(e.target.value)}
-            placeholder="Search all disputes..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+      {/* Search, Filter Tabs and Export Bar */}
+      <div className="flex flex-col gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div className="relative w-full sm:w-80">
+            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+            <input
+              type="text"
+              value={quickFilterText}
+              onChange={e => setQuickFilterText(e.target.value)}
+              placeholder="Filter by ID, buyer, carrier, reason, amount..."
+              className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+            />
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <span className="text-xs text-slate-500 font-medium hidden sm:inline">
+              Powered by <strong>AG Grid</strong>
+            </span>
+            <button
+              onClick={handleExportCsv}
+              className="inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition-colors"
+              title="Export filtered dispute queue to CSV"
+            >
+              <Download className="w-3.5 h-3.5 mr-1 text-slate-500" />
+              Export CSV
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <span className="text-xs text-slate-500 font-medium hidden sm:inline">
-            Powered by <strong>AG Grid</strong>
-          </span>
-          <button
-            onClick={handleExportCsv}
-            className="inline-flex items-center px-3 py-1.5 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition-colors"
-            title="Export dispute queue to CSV"
-          >
-            <Download className="w-3.5 h-3.5 mr-1 text-slate-500" />
-            Export CSV
-          </button>
+        {/* Quick Filter Tabs */}
+        <div className="flex items-center justify-between border-t border-slate-200 pt-2.5 text-xs">
+          <div className="flex items-center space-x-1.5 overflow-x-auto py-0.5">
+            <span className="text-slate-400 text-[11px] font-medium mr-1 flex items-center">
+              <Filter className="w-3 h-3 mr-1" /> View:
+            </span>
+            {(
+              [
+                { id: 'ALL', label: 'All Disputes', count: disputes.length },
+                { id: 'AWAITING_APPROVAL', label: 'Awaiting Review', count: disputes.filter(d => d.status === 'AWAITING_APPROVAL').length },
+                { id: 'CRITICAL', label: 'Critical (<24h)', count: disputes.filter(d => {
+                  if (!d.dueDate) return false;
+                  const diff = (new Date(d.dueDate).getTime() - Date.now()) / (1000 * 60 * 60);
+                  return diff > 0 && diff <= 24;
+                }).length },
+                { id: 'EVIDENCE_SUBMITTED', label: 'Evidence Filed', count: disputes.filter(d => d.status === 'EVIDENCE_SUBMITTED').length },
+                { id: 'RESOLVED', label: 'Settled', count: disputes.filter(d => d.status === 'RESOLVED' || d.status === 'CLAIM_ACCEPTED').length }
+              ] as const
+            ).map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
+                  activeTab === tab.id
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200'
+                }`}
+              >
+                {tab.label} {tab.count > 0 && <span className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] ${activeTab === tab.id ? 'bg-blue-800 text-blue-100' : 'bg-slate-100 text-slate-600'}`}>{tab.count}</span>}
+              </button>
+            ))}
+          </div>
+
+          <div className="hidden lg:flex items-center text-[11px] text-slate-500 space-x-1">
+            <Keyboard className="w-3.5 h-3.5 text-slate-400 mr-1" />
+            <span>Double-click or press <kbd className="px-1.5 py-0.5 bg-slate-200 rounded text-[10px] font-mono">Enter</kbd> to inspect</span>
+          </div>
         </div>
       </div>
 
@@ -244,10 +318,13 @@ export default function DisputeGrid({ disputes, loading }: DisputeGridProps) {
       <div className="ag-theme-quartz w-full shadow-sm rounded-xl overflow-hidden border border-slate-200">
         <AgGridReact<DisputeGridRow>
           ref={gridRef}
-          rowData={disputes}
+          rowData={filteredDisputes}
           columnDefs={columnDefs}
           defaultColDef={defaultColDef}
           quickFilterText={quickFilterText}
+          rowSelection="single"
+          onRowDoubleClicked={handleRowDoubleClicked}
+          onCellKeyDown={handleCellKeyDown}
           pagination={true}
           paginationPageSize={10}
           paginationPageSizeSelector={[10, 25, 50]}
@@ -256,7 +333,7 @@ export default function DisputeGrid({ disputes, loading }: DisputeGridProps) {
           headerHeight={42}
           animateRows={true}
           loading={loading}
-          overlayNoRowsTemplate="<div class='p-8 text-center text-slate-400 text-sm'>No active disputes found in this filter view.</div>"
+          overlayNoRowsTemplate="<div class='p-8 text-center text-slate-400 text-sm font-medium'>No disputes matching this filter view.</div>"
         />
       </div>
     </div>
