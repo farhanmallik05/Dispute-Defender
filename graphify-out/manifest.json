@@ -1,0 +1,732 @@
+{
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_m1_r2\\inspect_db.ts": {
+    "mtime": 1792961361.6127312,
+    "ast_hash": "e4938db8bb980bb3f1a38f37d6cf1ca3",
+    "semantic_hash": "e4938db8bb980bb3f1a38f37d6cf1ca3"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_m1_r2\\test_node24.ts": {
+    "mtime": 1792961241.2390628,
+    "ast_hash": "e6a5908779d79dc55ed75a1a04be11fc",
+    "semantic_hash": "e6a5908779d79dc55ed75a1a04be11fc"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_m1_r2\\test_regex_fixes.ts": {
+    "mtime": 1792961553.0318494,
+    "ast_hash": "170081eb4a8d4ab23ba9d0e41bbf51a4",
+    "semantic_hash": "170081eb4a8d4ab23ba9d0e41bbf51a4"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_m1_r2\\test_seed.ts": {
+    "mtime": 1792961382.5529082,
+    "ast_hash": "0ee68d949e22c081cec3bdc3651627b2",
+    "semantic_hash": "0ee68d949e22c081cec3bdc3651627b2"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_m1_r2\\test_unit_cases.ts": {
+    "mtime": 1792961581.342175,
+    "ast_hash": "888b960fce275a50aca6b65bf39a54d4",
+    "semantic_hash": "888b960fce275a50aca6b65bf39a54d4"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\next-env.d.ts": {
+    "mtime": 1792957446.1474547,
+    "ast_hash": "187b4b5b507c358a018aeeadd81abe57",
+    "semantic_hash": "187b4b5b507c358a018aeeadd81abe57"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\next.config.mjs": {
+    "mtime": 1792959140.2473702,
+    "ast_hash": "a5390d329f474c8cd63b15b714cd0887",
+    "semantic_hash": "a5390d329f474c8cd63b15b714cd0887"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\package.json": {
+    "mtime": 1793431848.4990282,
+    "ast_hash": "755a067ea319c2ee7e06ad42bd5c4658",
+    "semantic_hash": "755a067ea319c2ee7e06ad42bd5c4658"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\postcss.config.mjs": {
+    "mtime": 1792955648.8573315,
+    "ast_hash": "c56b5f3c12f777a86e2513f45daab56a",
+    "semantic_hash": "c56b5f3c12f777a86e2513f45daab56a"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\tailwind.config.ts": {
+    "mtime": 1792955643.6353896,
+    "ast_hash": "f6af935fd5c820bc74637eecfbdcf5e9",
+    "semantic_hash": "f6af935fd5c820bc74637eecfbdcf5e9"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\tsconfig.json": {
+    "mtime": 1793041165.3869412,
+    "ast_hash": "f2435e4d1c59b1c597aa74d98d83b69b",
+    "semantic_hash": "f2435e4d1c59b1c597aa74d98d83b69b"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\app\\layout.tsx": {
+    "mtime": 1793431742.874194,
+    "ast_hash": "3b2256adbaf2271fa18118dfb867c5d1",
+    "semantic_hash": "3b2256adbaf2271fa18118dfb867c5d1"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\app\\page.tsx": {
+    "mtime": 1793021073.8155901,
+    "ast_hash": "1333a54b6b4208bc765f69330ccd7e0e",
+    "semantic_hash": "1333a54b6b4208bc765f69330ccd7e0e"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\app\\analytics\\page.tsx": {
+    "mtime": 1793431572.086358,
+    "ast_hash": "94310248ddc4175315dc0003c2e72155",
+    "semantic_hash": "94310248ddc4175315dc0003c2e72155"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\app\\api\\audit\\route.ts": {
+    "mtime": 1793041085.0314436,
+    "ast_hash": "519672272e9f5b407f93cc5baf751875",
+    "semantic_hash": "519672272e9f5b407f93cc5baf751875"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\app\\api\\disputes\\route.ts": {
+    "mtime": 1793430034.1590705,
+    "ast_hash": "92bfbcba7067d73fb1bbe55d6d92dbe7",
+    "semantic_hash": "92bfbcba7067d73fb1bbe55d6d92dbe7"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\app\\api\\disputes\\sync\\route.ts": {
+    "mtime": 1792956312.4700215,
+    "ast_hash": "551b7c4f957666d5033dca131aee1f35",
+    "semantic_hash": "551b7c4f957666d5033dca131aee1f35"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\app\\api\\disputes\\[id]\\route.ts": {
+    "mtime": 1793041315.371597,
+    "ast_hash": "3229c29e249acbdaab9f99189e3cceb5",
+    "semantic_hash": "3229c29e249acbdaab9f99189e3cceb5"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\app\\api\\disputes\\[id]\\approve\\route.ts": {
+    "mtime": 1793430258.1688597,
+    "ast_hash": "b82ea9e73ba44818d24b0d7f23a76aa0",
+    "semantic_hash": "b82ea9e73ba44818d24b0d7f23a76aa0"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\app\\api\\webhooks\\paypal\\route.ts": {
+    "mtime": 1793430002.126616,
+    "ast_hash": "d41e294bd632c906c525d953b862f2c4",
+    "semantic_hash": "d41e294bd632c906c525d953b862f2c4"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\app\\audit\\page.tsx": {
+    "mtime": 1792963895.462103,
+    "ast_hash": "7022128e9c788ae78b56ad66872261bf",
+    "semantic_hash": "7022128e9c788ae78b56ad66872261bf"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\app\\disputes\\[id]\\page.tsx": {
+    "mtime": 1793431322.993383,
+    "ast_hash": "c4f5acd27468d85446a790db5809240a",
+    "semantic_hash": "c4f5acd27468d85446a790db5809240a"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\components\\queue\\DisputeGrid.tsx": {
+    "mtime": 1793430864.798201,
+    "ast_hash": "de73e360c8188203903f97b703008c2f",
+    "semantic_hash": "de73e360c8188203903f97b703008c2f"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\lib\\agent\\prompts.ts": {
+    "mtime": 1792956006.9604323,
+    "ast_hash": "c9dd44fee226387a0733741062e2738c",
+    "semantic_hash": "c9dd44fee226387a0733741062e2738c"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\lib\\agent\\redactor.ts": {
+    "mtime": 1793038992.7460098,
+    "ast_hash": "1525beba2193ab44b79a3be08b3a0fbe",
+    "semantic_hash": "1525beba2193ab44b79a3be08b3a0fbe"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\lib\\agent\\schemas.ts": {
+    "mtime": 1792955991.6226485,
+    "ast_hash": "1883afed638acdf13a9c82c7fc8fc9d0",
+    "semantic_hash": "1883afed638acdf13a9c82c7fc8fc9d0"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\lib\\agent\\triage.ts": {
+    "mtime": 1793041315.372598,
+    "ast_hash": "31d44f1dc5b86da504371072bda9fe7d",
+    "semantic_hash": "31d44f1dc5b86da504371072bda9fe7d"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\lib\\db\\audit.ts": {
+    "mtime": 1793430984.1947808,
+    "ast_hash": "33f659affff21d8bd693dea63ad09ac9",
+    "semantic_hash": "33f659affff21d8bd693dea63ad09ac9"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\lib\\db\\index.ts": {
+    "mtime": 1793429972.0287237,
+    "ast_hash": "d06d6147d24d3bb185d2ebcca676b30d",
+    "semantic_hash": "d06d6147d24d3bb185d2ebcca676b30d"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\lib\\db\\schema.ts": {
+    "mtime": 1793429850.2671988,
+    "ast_hash": "bcf1385f96220d075aa57ceab99fa2f8",
+    "semantic_hash": "bcf1385f96220d075aa57ceab99fa2f8"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\lib\\paypal\\client.ts": {
+    "mtime": 1792955701.4978476,
+    "ast_hash": "2399ca3d651dec6a1e4493e232307f74",
+    "semantic_hash": "2399ca3d651dec6a1e4493e232307f74"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\lib\\paypal\\disputes.ts": {
+    "mtime": 1793038409.0434568,
+    "ast_hash": "8d8aa40130a14778ee169792d1865d2a",
+    "semantic_hash": "8d8aa40130a14778ee169792d1865d2a"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\lib\\paypal\\server-sdk.ts": {
+    "mtime": 1793021150.6069715,
+    "ast_hash": "0609ac6e90957e40c7083a9b4a1fba69",
+    "semantic_hash": "0609ac6e90957e40c7083a9b4a1fba69"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\lib\\paypal\\webhook-verify.ts": {
+    "mtime": 1792955739.7223282,
+    "ast_hash": "6ae3dbfd763701435c870da216ed1c72",
+    "semantic_hash": "6ae3dbfd763701435c870da216ed1c72"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\lib\\workflows\\dispute-pipeline.ts": {
+    "mtime": 1793038409.0434568,
+    "ast_hash": "19c94f35e2cfcdd05668a3ff6259db17",
+    "semantic_hash": "19c94f35e2cfcdd05668a3ff6259db17"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\scripts\\seed-disputes.ts": {
+    "mtime": 1792963976.8053887,
+    "ast_hash": "8d7eb166a65e8ce54de3af682b106520",
+    "semantic_hash": "8d7eb166a65e8ce54de3af682b106520"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\scripts\\simulate-webhook.ts": {
+    "mtime": 1793041726.3402586,
+    "ast_hash": "1829663588472725e8a96bb23eb83d6a",
+    "semantic_hash": "1829663588472725e8a96bb23eb83d6a"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\test\\challenger-adversarial.test.ts": {
+    "mtime": 1792962286.016399,
+    "ast_hash": "313a8aaa87eb2f473a16e78d13ba995a",
+    "semantic_hash": "313a8aaa87eb2f473a16e78d13ba995a"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\test\\challenger-m1-2.test.ts": {
+    "mtime": 1793066521.0054207,
+    "ast_hash": "c447df681cc2059cc833c9a9bdd4be8d",
+    "semantic_hash": "c447df681cc2059cc833c9a9bdd4be8d"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\test\\e2e-bundle.mjs": {
+    "mtime": 1792962447.5329733,
+    "ast_hash": "378a3ab773cf0b4a84a574a9d96d0210",
+    "semantic_hash": "378a3ab773cf0b4a84a574a9d96d0210"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\test\\e2e-helpers.ts": {
+    "mtime": 1792958623.9954207,
+    "ast_hash": "c71163fbbc6960da848795f5376ce8b6",
+    "semantic_hash": "c71163fbbc6960da848795f5376ce8b6"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\test\\e2e-runner.ts": {
+    "mtime": 1793040799.047956,
+    "ast_hash": "96425734bd71f8ebaa4ea0da2050e420",
+    "semantic_hash": "96425734bd71f8ebaa4ea0da2050e420"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\test\\redactor-adversarial.test.ts": {
+    "mtime": 1792959733.207058,
+    "ast_hash": "ecace712ccb690ffcf083d678f8acf44",
+    "semantic_hash": "ecace712ccb690ffcf083d678f8acf44"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\test\\redactor.test.ts": {
+    "mtime": 1792958871.477094,
+    "ast_hash": "9ded0712ebec10840a399ce7c3ef0d8c",
+    "semantic_hash": "9ded0712ebec10840a399ce7c3ef0d8c"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\src\\types\\dispute.ts": {
+    "mtime": 1793038135.0914795,
+    "ast_hash": "b408ab088d3af8bb97a85d78c46a9981",
+    "semantic_hash": "b408ab088d3af8bb97a85d78c46a9981"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\HANDOFF.md": {
+    "mtime": 1792963825.2579055,
+    "ast_hash": "07dd74e4a78c25878c534ec0f306808c",
+    "semantic_hash": "07dd74e4a78c25878c534ec0f306808c"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\ORIGINAL_REQUEST.md": {
+    "mtime": 1792956994.926982,
+    "ast_hash": "87fabe8a9addac8988073f08ec6e73ec",
+    "semantic_hash": "87fabe8a9addac8988073f08ec6e73ec"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\README.md": {
+    "mtime": 1792956188.8917496,
+    "ast_hash": "60427cf2024d538158bd0eba8a2e9841",
+    "semantic_hash": "60427cf2024d538158bd0eba8a2e9841"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\ORIGINAL_REQUEST.md": {
+    "mtime": 1792956980.6794467,
+    "ast_hash": "87fabe8a9addac8988073f08ec6e73ec",
+    "semantic_hash": "87fabe8a9addac8988073f08ec6e73ec"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\auditor_m1_1\\BRIEFING.md": {
+    "mtime": 1792960162.2470672,
+    "ast_hash": "2efe122a6e5cb6f3160d74bd3396cd66",
+    "semantic_hash": "2efe122a6e5cb6f3160d74bd3396cd66"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\auditor_m1_1\\DISPATCH.md": {
+    "mtime": 1792959382.1954422,
+    "ast_hash": "8e0394009d53b6904eac565f36e8d966",
+    "semantic_hash": "8e0394009d53b6904eac565f36e8d966"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\auditor_m1_1\\handoff.md": {
+    "mtime": 1792960203.7139645,
+    "ast_hash": "dd856688d43e773e0e6b5b7fbec81838",
+    "semantic_hash": "dd856688d43e773e0e6b5b7fbec81838"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\auditor_m1_1\\progress.md": {
+    "mtime": 1792960167.8612797,
+    "ast_hash": "0200af015bc98856a7c7bc7e3d55f6b0",
+    "semantic_hash": "0200af015bc98856a7c7bc7e3d55f6b0"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\auditor_m1_r2_1\\BRIEFING.md": {
+    "mtime": 1792962487.5695336,
+    "ast_hash": "44ea66ce735888dea6803f87cb3c3e7f",
+    "semantic_hash": "44ea66ce735888dea6803f87cb3c3e7f"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\auditor_m1_r2_1\\DISPATCH.md": {
+    "mtime": 1792962149.0436802,
+    "ast_hash": "70f2e8a6db1ab8fa304a4376cd2e69ff",
+    "semantic_hash": "70f2e8a6db1ab8fa304a4376cd2e69ff"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\auditor_m1_r2_1\\handoff.md": {
+    "mtime": 1792962536.1050534,
+    "ast_hash": "8d44bb20f4d913c5807dc593c4758e11",
+    "semantic_hash": "8d44bb20f4d913c5807dc593c4758e11"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\auditor_m1_r2_1\\progress.md": {
+    "mtime": 1792962500.7008235,
+    "ast_hash": "a7317ee70c3a4f3ce4381f8ccd1caa6a",
+    "semantic_hash": "a7317ee70c3a4f3ce4381f8ccd1caa6a"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_1\\BRIEFING.md": {
+    "mtime": 1792959838.5619392,
+    "ast_hash": "b312f4fbb3d72043c4c67674a6b1b590",
+    "semantic_hash": "b312f4fbb3d72043c4c67674a6b1b590"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_1\\DISPATCH.md": {
+    "mtime": 1792959379.6572576,
+    "ast_hash": "e72dd0f82fd712043b9b59e6d1fa6dd4",
+    "semantic_hash": "e72dd0f82fd712043b9b59e6d1fa6dd4"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_1\\handoff.md": {
+    "mtime": 1792959971.9279203,
+    "ast_hash": "217d5e67dfac21f51a9e832b74abb786",
+    "semantic_hash": "217d5e67dfac21f51a9e832b74abb786"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_1\\progress.md": {
+    "mtime": 1792959897.426329,
+    "ast_hash": "6ca68d979cdbf8c4368c3492df3000f6",
+    "semantic_hash": "6ca68d979cdbf8c4368c3492df3000f6"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_2\\BRIEFING.md": {
+    "mtime": 1792960642.3673449,
+    "ast_hash": "e08383171910a345400eabf3c3e23565",
+    "semantic_hash": "e08383171910a345400eabf3c3e23565"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_2\\DISPATCH.md": {
+    "mtime": 1792959380.4616065,
+    "ast_hash": "5f8bf17cc7c55a685fc80273d1fc9eff",
+    "semantic_hash": "5f8bf17cc7c55a685fc80273d1fc9eff"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_2\\handoff.md": {
+    "mtime": 1792960684.8676195,
+    "ast_hash": "4fe17581a7a75c8232bbeb1d7bb942b1",
+    "semantic_hash": "4fe17581a7a75c8232bbeb1d7bb942b1"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_2\\progress.md": {
+    "mtime": 1792960654.3136795,
+    "ast_hash": "964aa24e484ce29a241de91114ca4659",
+    "semantic_hash": "964aa24e484ce29a241de91114ca4659"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_r2_1\\BRIEFING.md": {
+    "mtime": 1792962519.768249,
+    "ast_hash": "4fbae2abea716907ed1ef68e8d002d9a",
+    "semantic_hash": "4fbae2abea716907ed1ef68e8d002d9a"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_r2_1\\DISPATCH.md": {
+    "mtime": 1792962161.5173783,
+    "ast_hash": "69d339a1a0e3bd9f6a1997ad67d3a893",
+    "semantic_hash": "69d339a1a0e3bd9f6a1997ad67d3a893"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_r2_1\\handoff.md": {
+    "mtime": 1792962557.1002412,
+    "ast_hash": "685e42efa4b87c307c76ba3a4606c7eb",
+    "semantic_hash": "685e42efa4b87c307c76ba3a4606c7eb"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_r2_1\\progress.md": {
+    "mtime": 1792962480.9928565,
+    "ast_hash": "26a967415fb2127a9b4bd48abe926942",
+    "semantic_hash": "26a967415fb2127a9b4bd48abe926942"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_r2_2\\BRIEFING.md": {
+    "mtime": 1792962588.6310866,
+    "ast_hash": "c8c2d69744b144ac21ff05ec7ebf2ab5",
+    "semantic_hash": "c8c2d69744b144ac21ff05ec7ebf2ab5"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_r2_2\\DISPATCH.md": {
+    "mtime": 1792962149.580128,
+    "ast_hash": "ced810e29cf9734f45357dadebd32cbc",
+    "semantic_hash": "ced810e29cf9734f45357dadebd32cbc"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_r2_2\\handoff.md": {
+    "mtime": 1792962623.6912227,
+    "ast_hash": "d8595b44fc10fe5feef05a1685a4893f",
+    "semantic_hash": "d8595b44fc10fe5feef05a1685a4893f"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\challenger_m1_r2_2\\progress.md": {
+    "mtime": 1792962573.89023,
+    "ast_hash": "d9964e64ac36e4903b84879aeaf1cab6",
+    "semantic_hash": "d9964e64ac36e4903b84879aeaf1cab6"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_m1_r2\\BRIEFING.md": {
+    "mtime": 1792961685.2978022,
+    "ast_hash": "a5097cf8d702adf13c6033a8098ae894",
+    "semantic_hash": "a5097cf8d702adf13c6033a8098ae894"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_m1_r2\\DISPATCH.md": {
+    "mtime": 1792960947.6207047,
+    "ast_hash": "ba1e7be41a1d04d0f9ae96ed1f1ab2b6",
+    "semantic_hash": "ba1e7be41a1d04d0f9ae96ed1f1ab2b6"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_m1_r2\\handoff.md": {
+    "mtime": 1792961672.0632873,
+    "ast_hash": "ab8370921008be431a5730821fa03e8c",
+    "semantic_hash": "ab8370921008be431a5730821fa03e8c"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_m1_r2\\progress.md": {
+    "mtime": 1792961602.1840775,
+    "ast_hash": "ffd48c85de8c4fcf87f80e2b69fe91f5",
+    "semantic_hash": "ffd48c85de8c4fcf87f80e2b69fe91f5"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_m1_r2\\remediation_strategy.md": {
+    "mtime": 1792961649.0760963,
+    "ast_hash": "4a8ad60f16b36206adaecca45fea6c02",
+    "semantic_hash": "4a8ad60f16b36206adaecca45fea6c02"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_survey_2\\BRIEFING.md": {
+    "mtime": 1792957866.4040148,
+    "ast_hash": "ef1b0624b61267c2209c669742e12654",
+    "semantic_hash": "ef1b0624b61267c2209c669742e12654"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_survey_2\\DISPATCH.md": {
+    "mtime": 1792957223.8334274,
+    "ast_hash": "373d462b63ce3f94cce9122a9c7912fc",
+    "semantic_hash": "373d462b63ce3f94cce9122a9c7912fc"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_survey_2\\handoff.md": {
+    "mtime": 1792957853.3750534,
+    "ast_hash": "dbea01417ab15c365a7cec6f3aee10a4",
+    "semantic_hash": "dbea01417ab15c365a7cec6f3aee10a4"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_survey_2\\progress.md": {
+    "mtime": 1792957871.9632168,
+    "ast_hash": "fba2c97870e0b7dac2725775b8611efb",
+    "semantic_hash": "fba2c97870e0b7dac2725775b8611efb"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_survey_2\\survey_report.md": {
+    "mtime": 1792957828.297663,
+    "ast_hash": "e1059bdbcaf8dbcd0e0c4704791ad724",
+    "semantic_hash": "e1059bdbcaf8dbcd0e0c4704791ad724"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_survey_3\\BRIEFING.md": {
+    "mtime": 1792957618.3320878,
+    "ast_hash": "6de45c5a51d9b2f12a7c96d3c65aff79",
+    "semantic_hash": "6de45c5a51d9b2f12a7c96d3c65aff79"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_survey_3\\DISPATCH.md": {
+    "mtime": 1792957214.7356834,
+    "ast_hash": "30bd5a7c743c03f81246e5ca7bb53b38",
+    "semantic_hash": "30bd5a7c743c03f81246e5ca7bb53b38"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_survey_3\\handoff.md": {
+    "mtime": 1792957597.4358728,
+    "ast_hash": "423aec4384f2759dbea69e5d1b3ca514",
+    "semantic_hash": "423aec4384f2759dbea69e5d1b3ca514"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_survey_3\\progress.md": {
+    "mtime": 1792957623.6299324,
+    "ast_hash": "8c7c7135c1d79bc19e0ecae0553a4a35",
+    "semantic_hash": "8c7c7135c1d79bc19e0ecae0553a4a35"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\explorer_survey_3\\survey_report.md": {
+    "mtime": 1792957572.1659532,
+    "ast_hash": "7451c495ea1c911ea520da530d83bad2",
+    "semantic_hash": "7451c495ea1c911ea520da530d83bad2"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\orchestrator_1\\BRIEFING.md": {
+    "mtime": 1792963750.7541294,
+    "ast_hash": "a45aae02f51f55cac29c88b534f969dd",
+    "semantic_hash": "a45aae02f51f55cac29c88b534f969dd"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\orchestrator_1\\context.md": {
+    "mtime": 1792957013.4515543,
+    "ast_hash": "045449e6b64d0bbedf9880d3dbf35cf2",
+    "semantic_hash": "045449e6b64d0bbedf9880d3dbf35cf2"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\orchestrator_1\\DISPATCH.md": {
+    "mtime": 1792957042.4076672,
+    "ast_hash": "8e10722b20da074954c73741b6167c58",
+    "semantic_hash": "8e10722b20da074954c73741b6167c58"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\orchestrator_1\\GATE_STATUS.md": {
+    "mtime": 1792963274.6961367,
+    "ast_hash": "7060acc5fbd215be654530d364dc717a",
+    "semantic_hash": "7060acc5fbd215be654530d364dc717a"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\orchestrator_1\\handoff.md": {
+    "mtime": 1792963732.8923109,
+    "ast_hash": "2f1b93ca9d42541c2554488fdd0cbead",
+    "semantic_hash": "2f1b93ca9d42541c2554488fdd0cbead"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\orchestrator_1\\progress.md": {
+    "mtime": 1792963757.1810687,
+    "ast_hash": "440ce4e5590da1706023c43dda589e2a",
+    "semantic_hash": "440ce4e5590da1706023c43dda589e2a"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\orchestrator_1\\PROJECT.md": {
+    "mtime": 1792960254.9136474,
+    "ast_hash": "2fd545e9785f3db3ee84b9ba41b6a059",
+    "semantic_hash": "2fd545e9785f3db3ee84b9ba41b6a059"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\orchestrator_1\\TEST_INFRA.md": {
+    "mtime": 1792957939.1122155,
+    "ast_hash": "76f093cb917462cf8c25f02e287b7f75",
+    "semantic_hash": "76f093cb917462cf8c25f02e287b7f75"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_1\\BRIEFING.md": {
+    "mtime": 1792959396.7854512,
+    "ast_hash": "4aad6b73910d41588b90d5d6e4424b0e",
+    "semantic_hash": "4aad6b73910d41588b90d5d6e4424b0e"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_1\\DISPATCH.md": {
+    "mtime": 1792959384.0016873,
+    "ast_hash": "17d7f680a1576577dbd37ca63576e466",
+    "semantic_hash": "17d7f680a1576577dbd37ca63576e466"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_1\\progress.md": {
+    "mtime": 1792959493.6652834,
+    "ast_hash": "9c3d4f1c60789b0f2f5210127695f091",
+    "semantic_hash": "9c3d4f1c60789b0f2f5210127695f091"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_2\\BRIEFING.md": {
+    "mtime": 1792960094.932777,
+    "ast_hash": "d60c8308b2edef1a1f3acf00488c1b96",
+    "semantic_hash": "d60c8308b2edef1a1f3acf00488c1b96"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_2\\DISPATCH.md": {
+    "mtime": 1792959393.7746036,
+    "ast_hash": "a2c9e933c3488171ba5711539cd8f33c",
+    "semantic_hash": "a2c9e933c3488171ba5711539cd8f33c"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_2\\handoff.md": {
+    "mtime": 1792960126.7866511,
+    "ast_hash": "f25f603a42a7fcad7885025a3d1172aa",
+    "semantic_hash": "f25f603a42a7fcad7885025a3d1172aa"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_2\\progress.md": {
+    "mtime": 1792960102.2344966,
+    "ast_hash": "f1a3f973c2fb93d67f91c697283cad8f",
+    "semantic_hash": "f1a3f973c2fb93d67f91c697283cad8f"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_r2_1\\BRIEFING.md": {
+    "mtime": 1792962353.167304,
+    "ast_hash": "8b64d48cc4e7b50097c94601f6031b6c",
+    "semantic_hash": "8b64d48cc4e7b50097c94601f6031b6c"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_r2_1\\DISPATCH.md": {
+    "mtime": 1792962151.354617,
+    "ast_hash": "1d8cb18375c7580debf1fa639e83f9cb",
+    "semantic_hash": "1d8cb18375c7580debf1fa639e83f9cb"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_r2_1\\handoff.md": {
+    "mtime": 1792962386.2316804,
+    "ast_hash": "b2e51b20a9d39cf5e236a3e434d3a059",
+    "semantic_hash": "b2e51b20a9d39cf5e236a3e434d3a059"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_r2_1\\progress.md": {
+    "mtime": 1792962358.5539682,
+    "ast_hash": "e54f74a56d40cd15e391d231c3524637",
+    "semantic_hash": "e54f74a56d40cd15e391d231c3524637"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_r2_2\\BRIEFING.md": {
+    "mtime": 1792962607.4507477,
+    "ast_hash": "17da1b9d41b4f3ef0f2db1b5317b169b",
+    "semantic_hash": "17da1b9d41b4f3ef0f2db1b5317b169b"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_r2_2\\DISPATCH.md": {
+    "mtime": 1792962151.2929304,
+    "ast_hash": "3fe7fa9e362aefbfab48f67722a7156b",
+    "semantic_hash": "3fe7fa9e362aefbfab48f67722a7156b"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_r2_2\\handoff.md": {
+    "mtime": 1792962639.4767618,
+    "ast_hash": "2c1906eba989049e6ff35216a7b97883",
+    "semantic_hash": "2c1906eba989049e6ff35216a7b97883"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\reviewer_m1_r2_2\\progress.md": {
+    "mtime": 1792962612.282817,
+    "ast_hash": "c49ae1186261eee1abbff91a988be83f",
+    "semantic_hash": "c49ae1186261eee1abbff91a988be83f"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\sentinel_1\\BRIEFING.md": {
+    "mtime": 1792957048.9588876,
+    "ast_hash": "a6f29f52b47ee019a3048d5048d56059",
+    "semantic_hash": "a6f29f52b47ee019a3048d5048d56059"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\sentinel_1\\handoff.md": {
+    "mtime": 1792957060.1673384,
+    "ast_hash": "dbd8d12ca10167b0120f011d6bac26d2",
+    "semantic_hash": "dbd8d12ca10167b0120f011d6bac26d2"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\spec_miner_survey_1\\BRIEFING.md": {
+    "mtime": 1792957683.690594,
+    "ast_hash": "88fe554d35d77df0aa06853bac4dae52",
+    "semantic_hash": "88fe554d35d77df0aa06853bac4dae52"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\spec_miner_survey_1\\DISPATCH.md": {
+    "mtime": 1792957215.2224193,
+    "ast_hash": "1dbc9e493bfae01ec9fc133852936341",
+    "semantic_hash": "1dbc9e493bfae01ec9fc133852936341"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\spec_miner_survey_1\\handoff.md": {
+    "mtime": 1792957664.8102393,
+    "ast_hash": "03290812323a011bad910f02455ce269",
+    "semantic_hash": "03290812323a011bad910f02455ce269"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\spec_miner_survey_1\\progress.md": {
+    "mtime": 1792957671.2523427,
+    "ast_hash": "726e056846dd6fed6e3c4768dc7cafae",
+    "semantic_hash": "726e056846dd6fed6e3c4768dc7cafae"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\spec_miner_survey_1\\survey_report.md": {
+    "mtime": 1792957638.6732695,
+    "ast_hash": "84b3e424a666e8da5e94d3f174d39298",
+    "semantic_hash": "84b3e424a666e8da5e94d3f174d39298"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\test_writer_e2e_1\\BRIEFING.md": {
+    "mtime": 1792958069.368276,
+    "ast_hash": "0035b4bab235e169a2ca99cbae3d949d",
+    "semantic_hash": "0035b4bab235e169a2ca99cbae3d949d"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\test_writer_e2e_1\\DISPATCH.md": {
+    "mtime": 1792958056.5052598,
+    "ast_hash": "60c737df88b00f91049782b540da1167",
+    "semantic_hash": "60c737df88b00f91049782b540da1167"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\test_writer_e2e_1\\progress.md": {
+    "mtime": 1792958075.7781088,
+    "ast_hash": "d1b8258e832afa41d0276b37142c3a0c",
+    "semantic_hash": "d1b8258e832afa41d0276b37142c3a0c"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\worker_m1_1\\BRIEFING.md": {
+    "mtime": 1792959262.6995766,
+    "ast_hash": "39a78a9622db923cbb660c31971e56bc",
+    "semantic_hash": "39a78a9622db923cbb660c31971e56bc"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\worker_m1_1\\DISPATCH.md": {
+    "mtime": 1792958042.515281,
+    "ast_hash": "8471c2b7e574c1b144c7a4bda01b0fa2",
+    "semantic_hash": "8471c2b7e574c1b144c7a4bda01b0fa2"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\worker_m1_1\\handoff.md": {
+    "mtime": 1792959284.025713,
+    "ast_hash": "29563aa957f75163c6aefc6b380220bd",
+    "semantic_hash": "29563aa957f75163c6aefc6b380220bd"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\worker_m1_1\\progress.md": {
+    "mtime": 1792959240.9609632,
+    "ast_hash": "492a25cc53236d47d58953a9d3f75e2b",
+    "semantic_hash": "492a25cc53236d47d58953a9d3f75e2b"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\worker_m1_2\\BRIEFING.md": {
+    "mtime": 1792962006.909583,
+    "ast_hash": "5cd01b0443488185b1935357e93d606e",
+    "semantic_hash": "5cd01b0443488185b1935357e93d606e"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\worker_m1_2\\DISPATCH.md": {
+    "mtime": 1792961739.7963288,
+    "ast_hash": "8cd6b9aaa2436f891b16c8c67e984b9d",
+    "semantic_hash": "8cd6b9aaa2436f891b16c8c67e984b9d"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\worker_m1_2\\handoff.md": {
+    "mtime": 1792962034.6647353,
+    "ast_hash": "50cef2dd239ac7fbf5283a9f8d8f62a2",
+    "semantic_hash": "50cef2dd239ac7fbf5283a9f8d8f62a2"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.agents\\teamwork\\worker_m1_2\\progress.md": {
+    "mtime": 1792962011.712061,
+    "ast_hash": "9efef0118767982b305ea3a5cfe0a5bb",
+    "semantic_hash": "9efef0118767982b305ea3a5cfe0a5bb"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\.opencode\\omnirush\\inbox\\chat-attachments\\ses_e87950c69ffegHpZqRsO56TPzg\\72529e8a-5997-4b01-b30b-b3d2b1342f70-SKILL.md": {
+    "mtime": 1793021637.8497968,
+    "ast_hash": "46d453214517db87dd06e69e9b591116",
+    "semantic_hash": "46d453214517db87dd06e69e9b591116"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\PITCH_DECK.md": {
+    "mtime": 1793123066.0864997,
+    "ast_hash": "313d8c871686aba102d43c0f77a4475e",
+    "semantic_hash": "313d8c871686aba102d43c0f77a4475e"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\README.md": {
+    "mtime": 1793431798.9686494,
+    "ast_hash": "a66d99897d938e2b5c5620e49355b1ce",
+    "semantic_hash": "a66d99897d938e2b5c5620e49355b1ce"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\render.yaml": {
+    "mtime": 1792955653.9929256,
+    "ast_hash": "f5c1b92687a6a2b5fb36b3dce0a8f6dd",
+    "semantic_hash": "f5c1b92687a6a2b5fb36b3dce0a8f6dd"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\plan\\01_PRD_AND_VISION.md": {
+    "mtime": 1792955254.7036903,
+    "ast_hash": "1c3b1bf2da3cf8253d199e67933eadca",
+    "semantic_hash": "1c3b1bf2da3cf8253d199e67933eadca"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\plan\\02_ARCHITECTURE_AND_SPECS.md": {
+    "mtime": 1792955352.1374917,
+    "ast_hash": "5f6186a189088836c037ab8b0957380b",
+    "semantic_hash": "5f6186a189088836c037ab8b0957380b"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\plan\\03_SPONSOR_ALIGNMENT_STRATEGY.md": {
+    "mtime": 1792955390.5911114,
+    "ast_hash": "0b50f70be3dbd72e947ea59fe244b9cf",
+    "semantic_hash": "0b50f70be3dbd72e947ea59fe244b9cf"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\plan\\04_DAY_BY_DAY_EXECUTION_TIMELINE.md": {
+    "mtime": 1792955423.4085202,
+    "ast_hash": "9484a28a754254afbf20364ea8d7cb00",
+    "semantic_hash": "9484a28a754254afbf20364ea8d7cb00"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\plan\\05_DEMO_SCRIPT_AND_DEVPOST_SUBMISSION.md": {
+    "mtime": 1792955461.6139379,
+    "ast_hash": "c35853540b0c2ad22e2e0ea1032c1d41",
+    "semantic_hash": "c35853540b0c2ad22e2e0ea1032c1d41"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\plan\\06_RISK_MATRIX_AND_FALLBACKS.md": {
+    "mtime": 1792955483.8167858,
+    "ast_hash": "9b1a065f25158fa8a2dc6016758e92bb",
+    "semantic_hash": "9b1a065f25158fa8a2dc6016758e92bb"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\plan\\07_PPT_PITCH_DECK.md": {
+    "mtime": 1793122890.4048436,
+    "ast_hash": "a3010129220edfff09af378ac22a8f55",
+    "semantic_hash": "a3010129220edfff09af378ac22a8f55"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\public\\images\\01_hero_banner.jpg": {
+    "mtime": 1793429460.2108166,
+    "ast_hash": "3e75f2486349d1f60aac5e595a0e0104",
+    "semantic_hash": "3e75f2486349d1f60aac5e595a0e0104"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\public\\images\\02_command_center_queue.jpg": {
+    "mtime": 1793429487.7209268,
+    "ast_hash": "fbe13de505c52656914ef9cdce478290",
+    "semantic_hash": "fbe13de505c52656914ef9cdce478290"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\dispute-defender\\public\\images\\03_review_dossier.jpg": {
+    "mtime": 1793429512.9498353,
+    "ast_hash": "dcca0f2fed7c56e7e14c737f6cc2c694",
+    "semantic_hash": "dcca0f2fed7c56e7e14c737f6cc2c694"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\plan\\images\\01_hero_banner.jpg": {
+    "mtime": 1793429460.2108166,
+    "ast_hash": "3e75f2486349d1f60aac5e595a0e0104",
+    "semantic_hash": "3e75f2486349d1f60aac5e595a0e0104"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\plan\\images\\02_command_center_queue.jpg": {
+    "mtime": 1793429487.7209268,
+    "ast_hash": "fbe13de505c52656914ef9cdce478290",
+    "semantic_hash": "fbe13de505c52656914ef9cdce478290"
+  },
+  "D:\\AI-Lab\\Hackathon\\Paypal AI Hackathon\\plan\\images\\03_review_dossier.jpg": {
+    "mtime": 1793429512.9498353,
+    "ast_hash": "dcca0f2fed7c56e7e14c737f6cc2c694",
+    "semantic_hash": "dcca0f2fed7c56e7e14c737f6cc2c694"
+  }
+}
