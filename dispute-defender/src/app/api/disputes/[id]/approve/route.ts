@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { disputes, disputeContexts, triageDecisions } from '@/lib/db/schema';
 import { logAuditEvent } from '@/lib/db/audit';
 import { submitDisputeEvidence, acceptPayPalDisputeClaim, getDisputeActionLinks } from '@/lib/paypal/disputes';
+import { detectCarrierAndTracking, normalizeCarrierName } from '@/lib/paypal/carrier-detector';
 import { eq, desc } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
@@ -87,14 +88,20 @@ export async function POST(
 
     if (!dynamicTrackingNumber) {
       const notes = merchantEditedNotes || decision?.draftNotes || '';
-      const trackingMatch = notes.match(/\b(1Z[0-9A-Z]{16}|[0-9]{8,22}|[A-Z]{2}[0-9]{9}[A-Z]{2})\b/i);
-      if (trackingMatch) {
-        dynamicTrackingNumber = trackingMatch[0];
+      const detected = detectCarrierAndTracking(notes);
+      if (detected) {
+        dynamicTrackingNumber = detected.trackingNumber;
+        dynamicCarrierName = dynamicCarrierName || detected.carrier;
+      } else {
+        const trackingMatch = notes.match(/\b(1Z[0-9A-Z]{16}|[0-9]{8,22}|[A-Z]{2}[0-9]{9}[A-Z]{2})\b/i);
+        if (trackingMatch) {
+          dynamicTrackingNumber = trackingMatch[0];
+        }
+        if (/fedex/i.test(notes)) dynamicCarrierName = dynamicCarrierName || 'FEDEX';
+        else if (/ups/i.test(notes)) dynamicCarrierName = dynamicCarrierName || 'UPS';
+        else if (/usps/i.test(notes)) dynamicCarrierName = dynamicCarrierName || 'USPS';
+        else if (/dhl/i.test(notes)) dynamicCarrierName = dynamicCarrierName || 'DHL';
       }
-      if (/fedex/i.test(notes)) dynamicCarrierName = dynamicCarrierName || 'FEDEX';
-      else if (/ups/i.test(notes)) dynamicCarrierName = dynamicCarrierName || 'UPS';
-      else if (/usps/i.test(notes)) dynamicCarrierName = dynamicCarrierName || 'USPS';
-      else if (/dhl/i.test(notes)) dynamicCarrierName = dynamicCarrierName || 'DHL';
     }
 
     // Validate HATEOAS permissions if dispute links are present in rawJson
