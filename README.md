@@ -14,6 +14,7 @@ This repository contains the complete hackathon submission materials, architectu
   - [`06_RISK_MATRIX_AND_FALLBACKS.md`](./plan/06_RISK_MATRIX_AND_FALLBACKS.md): Sandbox friction mitigations, token refresh rules, and emergency scope cut order.
   - [`07_PPT_PITCH_DECK.md`](./plan/07_PPT_PITCH_DECK.md): 12-slide pitch deck blueprint, timed live pitch scripts, and judge Q&A defense guide.
   - [`08_VISUAL_ASSETS_SHOWCASE.md`](./plan/08_VISUAL_ASSETS_SHOWCASE.md): 10-piece production visual asset catalogue and Devpost showcase layout.
+  - [`09_MASTER_GAP_CLOSURE_PLAN.md`](./plan/09_MASTER_GAP_CLOSURE_PLAN.md): Exhaustive 8-phase gap closure blueprint and technical completion roadmap.
   - [`PROJECT_REPORT.md`](./plan/PROJECT_REPORT.md): Comprehensive end-to-end master project report for hackathon submission and evaluation.
 - **[`presentation/`](./presentation/)**: Submission presentation slide deck
   - [`dispute-defender.md`](./presentation/dispute-defender.md): 12-slide Marp-compatible presentation deck with speaker notes and honest verification boundaries.
