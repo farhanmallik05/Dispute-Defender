@@ -5,6 +5,7 @@ import { logAuditEvent } from '@/lib/db/audit';
 import { submitDisputeEvidence, acceptPayPalDisputeClaim, getDisputeActionLinks } from '@/lib/paypal/disputes';
 import { detectCarrierAndTracking, normalizeCarrierName } from '@/lib/paypal/carrier-detector';
 import { eq, desc } from 'drizzle-orm';
+import { getEnv } from '@/lib/env';
 
 export const dynamic = 'force-dynamic';
 
@@ -165,7 +166,15 @@ export async function POST(
     const hasCredentials = Boolean(
       process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET
     );
-    const isLiveProduction = process.env.PAYPAL_MODE === 'live';
+    const isLiveProduction = getEnv().PAYPAL_ENV === 'live';
+
+    const formattedAttachments = Array.isArray(body.attachments)
+      ? body.attachments.map((a: any) => ({
+          filename: a.filename || 'evidence.pdf',
+          contentType: a.contentType || 'application/pdf',
+          data: Buffer.from(a.dataBase64, 'base64'),
+        }))
+      : undefined;
 
     if (isLiveProduction && !hasCredentials) {
       await logAuditEvent({
@@ -195,6 +204,7 @@ export async function POST(
             trackingNumber: dynamicTrackingNumber,
             carrierName: dynamicCarrierName,
             notes: notesToSubmit,
+            attachments: formattedAttachments,
             endpointUrl: actionLinks.provideEvidenceUrl
           });
         } catch (apiErr: any) {

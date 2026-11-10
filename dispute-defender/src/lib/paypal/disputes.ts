@@ -11,12 +11,19 @@
 import { getPayPalAccessToken, getPayPalBaseUrl } from './client';
 import { PayPalDispute } from '../../types/dispute';
 
+export interface EvidenceFileAttachment {
+  filename: string;
+  contentType: string;
+  data: Blob | Buffer | Uint8Array;
+}
+
 export interface SubmitEvidenceParams {
   disputeId: string;
   evidenceType: 'PROOF_OF_FULFILLMENT' | 'PROOF_OF_REFUND' | 'OTHER';
   trackingNumber?: string;
   carrierName?: string;
   notes: string;
+  attachments?: EvidenceFileAttachment[];
   endpointUrl?: string;
 }
 
@@ -144,6 +151,16 @@ export async function submitDisputeEvidence(params: SubmitEvidenceParams): Promi
 
   const formData = new FormData();
   formData.append('input', JSON.stringify(inputPayload));
+
+  if (params.attachments && params.attachments.length > 0) {
+    for (let i = 0; i < params.attachments.length; i++) {
+      const file = params.attachments[i];
+      const blob = file.data instanceof Blob 
+        ? file.data 
+        : new Blob([file.data as any], { type: file.contentType });
+      formData.append(`file_${i}`, blob, file.filename);
+    }
+  }
 
   const response = await fetch(url, {
     method: 'POST',

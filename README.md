@@ -51,14 +51,17 @@ This repository contains the complete hackathon submission materials, architectu
    Or start in development mode: `npm run dev` (http://localhost:3000)
 
 ## Verified Test Coverage (100% Pass Rate)
+- **Configuration & Environment**: Strict Zod runtime schema validation (3/3)
 - **Unit & Security**: Zero-Trust PII Redaction (5/5)
 - **Carrier Intelligence**: Pattern detection for UPS, USPS, FedEx, DHL (6/6)
+- **Proactive SLA Monitor**: Real-time <24h and <48h urgency alerting (3/3)
+- **Multipart Attachments**: Binary PDF and photo evidence packaging (3/3)
 - **Self-Diagnostic Health**: SQLite, PayPal auth, and AI model health probes (6/6)
 - **UI Resilience**: Graceful handling of empty, 404, 400, and offline states (5/5)
 - **4-Tier E2E Suite**: Opaque-box verification across 32 integration scenarios (32/32)
 - **Empirical Challenger**: Dynamic carrier sourcing & HATEOAS pre-flight checks (14/14)
 - **Adversarial Stress Suites**: ReDoS, prompt injections, boundary addresses (81/81)
-- **Total Passing Automated Tests**: **149 / 149**
+- **Total Passing Automated Tests**: **158 / 158 (100% Pass Rate)**
 
 ## License
 MIT License. Open source and self-hostable.

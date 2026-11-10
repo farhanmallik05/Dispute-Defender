@@ -126,11 +126,20 @@ npm run test:all
 ```
 Or run individual test suites:
 ```bash
+# Environment Schema Validation
+npm run test:env
+
 # Zero-Trust PII Redactor
 npm run test:redactor
 
 # Carrier Tracking Intelligence & Auto-Detection
 npm run test:carrier
+
+# Proactive SLA Urgency & Alert Dispatcher
+npm run test:sla
+
+# Multipart Form & Binary Attachment Tests
+npm run test:multipart
 
 # Health & Diagnostics Probes
 npm run test:health
@@ -143,6 +152,9 @@ npm run test:e2e
 
 # Dynamic Carrier & HATEOAS Challenger Suite
 npm run test:challenger
+
+# Turnkey Live PayPal Sandbox Diagnostic
+npm run verify:sandbox
 ```
 All test suites run deterministically in sub-second time.
 

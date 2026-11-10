@@ -13,7 +13,7 @@ import * as schema from './schema';
 
 // @types/node 20 predates node:sqlite, while the runtime used by this project
 // provides it. Keep the runtime import local until the type package catches up.
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line
 const { DatabaseSync } = require('node:sqlite') as {
   DatabaseSync: new (filename: string) => any;
 };

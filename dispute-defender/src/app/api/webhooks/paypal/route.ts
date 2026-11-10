@@ -6,6 +6,7 @@ import { PayPalDispute } from '@/types/dispute';
 import { db } from '@/lib/db';
 import { disputes, webhookEvents } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
+import { getEnv } from '@/lib/env';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +23,7 @@ export async function POST(request: Request) {
     const transmissionTime = headers.get('paypal-transmission-time') || '';
 
     const hasSignatureHeaders = Boolean(authAlgo && certUrl && transmissionId && transmissionSig && transmissionTime);
-    const isLiveProduction = process.env.PAYPAL_MODE === 'live';
+    const isLiveProduction = getEnv().PAYPAL_ENV === 'live';
 
     // Unsigned webhooks are rejected in live production mode.
     if (!hasSignatureHeaders && isLiveProduction) {

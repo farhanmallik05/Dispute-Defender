@@ -6,9 +6,17 @@ services:
     region: oregon
     buildCommand: npm install && npm run build
     startCommand: npm start
+    disk:
+      name: dispute-data
+      mountPath: /data
+      sizeGB: 1
     envVars:
       - key: NODE_ENV
         value: production
+      - key: DATABASE_URL
+        value: /data/dispute-defender.sqlite
+      - key: INTEGRITY_MODE
+        value: live
       - key: PAYPAL_ENV
         value: sandbox
       - key: PAYPAL_CLIENT_ID

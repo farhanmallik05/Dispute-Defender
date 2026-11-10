@@ -6,6 +6,8 @@
  * - Automatic sandbox vs live endpoint resolution
  */
 
+import { getEnv } from '@/lib/env';
+
 interface CachedToken {
   accessToken: string;
   expiresAt: number; // Unix epoch ms
@@ -15,15 +17,16 @@ interface CachedToken {
 let tokenCache: CachedToken | null = null;
 
 export function getPayPalBaseUrl(): string {
-  const env = process.env.PAYPAL_ENV || 'sandbox';
-  return env === 'live' 
+  const currentEnv = getEnv().PAYPAL_ENV;
+  return currentEnv === 'live' 
     ? 'https://api-m.paypal.com' 
     : 'https://api-m.sandbox.paypal.com';
 }
 
 export async function getPayPalAccessToken(): Promise<string> {
-  const clientId = process.env.PAYPAL_CLIENT_ID;
-  const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+  const currentEnv = getEnv();
+  const clientId = currentEnv.PAYPAL_CLIENT_ID;
+  const clientSecret = currentEnv.PAYPAL_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
     throw new Error(

@@ -265,6 +265,15 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
         </div>
       </div>
 
+      {/* Regulatory & Decision Governance Notice */}
+      <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-3.5 text-[11px] text-slate-600 leading-relaxed">
+        <p className="flex items-center font-semibold text-slate-800 mb-1">
+          <AlertTriangle className="w-3.5 h-3.5 text-amber-600 mr-1.5" />
+          Regulatory & Decision Governance Notice
+        </p>
+        Dispute Defender operates under strict human-in-the-loop merchant authorization. Confidence scores and draft rebuttals reflect automated evidentiary matching against PayPal Seller Protection guidelines and do not constitute legal advice or guaranteed adjudication outcomes. Submission to PayPal occurs exclusively upon your explicit authorization.
+      </div>
+
       {/* Main Review Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Evidence Checklist & Order Context */}
