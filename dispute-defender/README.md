@@ -132,11 +132,17 @@ npm run test:redactor
 # Carrier Tracking Intelligence & Auto-Detection
 npm run test:carrier
 
-# Render Durable Pipeline Tasks
-npm run test:workflows
+# Health & Diagnostics Probes
+npm run test:health
 
-# Full local pipeline verification (uses an isolated SQLite database)
-DATABASE_URL=./e2e.sqlite INTEGRITY_MODE=demo npm run test:e2e
+# UI Resilience & State Handling
+npm run test:resilience
+
+# Full 4-Tier E2E Integration Suite
+npm run test:e2e
+
+# Dynamic Carrier & HATEOAS Challenger Suite
+npm run test:challenger
 ```
 All test suites run deterministically in sub-second time.
 

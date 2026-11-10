@@ -163,21 +163,21 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
   const isAccepted = dispute.status === 'CLAIM_ACCEPTED';
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto">
+    <div className="mx-auto max-w-6xl space-y-6">
       {/* Top Navigation */}
       <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-        <Link href="/" className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-slate-900">
+        <Link href="/" className="inline-flex items-center text-sm font-medium text-[#003087] hover:text-[#0070ba]">
           <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Dispute Queue
         </Link>
         <div className="flex items-center space-x-3">
           <button
             onClick={() => setShowRedactionDiff(!showRedactionDiff)}
-            className="inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-sm"
+            className="inline-flex items-center rounded-md border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50"
           >
             <Eye className="w-3.5 h-3.5 mr-1.5 text-blue-600" />
             {showRedactionDiff ? 'Hide Redaction Diff' : 'Inspect PII Redaction Diff'}
           </button>
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+          <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600">
             Stage: {dispute.lifeCycleStage}
           </span>
         </div>
@@ -185,15 +185,15 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
 
       {/* Redaction Diff Preview Modal / Drawer */}
       {showRedactionDiff && (
-        <div className="bg-slate-900 text-slate-100 p-6 rounded-2xl shadow-xl border border-slate-800 space-y-4">
+        <div className="space-y-4 rounded-lg border border-slate-700 bg-slate-900 p-6 text-slate-100 shadow-xl">
           <div className="flex justify-between items-center border-b border-slate-800 pb-3">
             <div>
               <h3 className="text-base font-bold text-white flex items-center">
                 <ShieldCheck className="w-5 h-5 text-emerald-400 mr-2" />
-                Zero-Trust PII Redaction Engine: Live Inspection
+                PII redaction inspection
               </h3>
               <p className="text-xs text-slate-400 mt-0.5">
-                Verifiable proof that buyer email, phone, street address, and full name are stripped prior to LLM inference.
+                Compare stored source fields with the sanitized context used for triage.
               </p>
             </div>
             <button
@@ -206,7 +206,7 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
             <div className="bg-slate-950 p-4 rounded-xl border border-slate-800">
-              <p className="text-slate-400 font-bold mb-2 uppercase tracking-wider">Raw Input Data (Private Store)</p>
+              <p className="text-slate-400 font-bold mb-2 uppercase tracking-wider">Stored source fields</p>
               <pre className="text-slate-300 overflow-x-auto whitespace-pre-wrap">
                 {JSON.stringify(
                   {
@@ -219,7 +219,7 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
               </pre>
             </div>
             <div className="bg-slate-950 p-4 rounded-xl border border-emerald-950">
-              <p className="text-emerald-400 font-bold mb-2 uppercase tracking-wider">Sanitized Payload Delivered to AI Model</p>
+              <p className="text-emerald-400 font-bold mb-2 uppercase tracking-wider">Sanitized triage context</p>
               <pre className="text-emerald-300 overflow-x-auto whitespace-pre-wrap">
                 {JSON.stringify(context?.redactedContext || {}, null, 2)}
               </pre>
@@ -230,10 +230,10 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
 
       {/* AI Verdict Banner */}
       <div
-        className={`p-6 rounded-2xl border shadow-sm ${
+        className={`rounded-lg border-l-4 p-6 shadow-sm ${
           isFight
-            ? 'bg-emerald-50/80 border-emerald-200'
-            : 'bg-amber-50/80 border-amber-200'
+            ? 'border-y border-r border-y-emerald-200 border-r-emerald-200 border-l-emerald-500 bg-emerald-50/80'
+            : 'border-y border-r border-y-amber-200 border-r-amber-200 border-l-[#ffc439] bg-amber-50/80'
         }`}
       >
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -270,13 +270,13 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
         {/* Left Column: Evidence Checklist & Order Context */}
         <div className="lg:col-span-2 space-y-6">
           {/* Evidence Checklist */}
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+          <div className="paypal-card space-y-4 p-6">
             <h3 className="text-base font-bold text-slate-900 flex items-center">
               <CheckCircle2 className="w-5 h-5 text-blue-600 mr-2" />
               Verified Evidence Checklist (Fact-Traceability)
             </h3>
             <p className="text-xs text-slate-500">
-              Every factual assertion below is directly mapped to immutable records retrieved from carrier and transaction APIs.
+              Each assertion shows the source field used by the triage decision.
             </p>
 
             <div className="space-y-3 pt-2">
@@ -304,7 +304,7 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
           </div>
 
           {/* Shipment & Tracking Details */}
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+          <div className="paypal-card space-y-4 p-6">
             <h3 className="text-base font-bold text-slate-900 flex items-center">
               <Truck className="w-5 h-5 text-blue-600 mr-2" />
               Carrier Fulfillment Record
@@ -337,29 +337,29 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
           </div>
         </div>
 
-        {/* Right Column: 1-Click Merchant Approval Action Panel */}
+        {/* Right Column: Merchant approval action panel */}
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5">
+          <div className="paypal-card space-y-5 border-t-4 border-t-[#003087] p-6">
             <h3 className="text-base font-bold text-slate-900 flex items-center">
               <Send className="w-5 h-5 text-blue-600 mr-2" />
-              1-Click Merchant Approval Gate
+              Merchant approval
             </h3>
             <p className="text-xs text-slate-500">
-              The AI agent cannot submit without your explicit sign-off. Edit the draft rebuttal note if desired, then click approve.
+              Review the draft, edit the note if needed, then explicitly approve a PayPal action.
             </p>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <label className="text-xs font-bold uppercase text-slate-600">Draft Rebuttal Note (Editable)</label>
+                <label className="paypal-eyebrow">Draft note</label>
                 <span className={`text-[11px] font-mono font-semibold ${notes.length > 3800 ? 'text-red-600' : notes.length > 3000 ? 'text-amber-600' : 'text-slate-400'}`}>
                   {notes.length} / 4000
                 </span>
               </div>
 
-              {/* 1-Click Legal Templates */}
+              {/* Suggested note templates */}
               {!isSubmitted && !isAccepted && (
                 <div className="space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-slate-400">1-Click Legal Templates:</span>
+                  <span className="text-[10px] font-bold uppercase text-slate-400">Suggested inserts</span>
                   <div className="flex flex-wrap gap-1.5">
                     <button
                       type="button"
@@ -392,7 +392,7 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
                 maxLength={4000}
                 rows={6}
                 disabled={isSubmitted || isAccepted}
-                className="w-full text-xs font-mono p-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:outline-none disabled:bg-slate-100 disabled:text-slate-500"
+                className="w-full rounded-md border border-slate-300 p-3 font-mono text-xs focus:outline-none focus:ring-2 focus:ring-[#0070ba] disabled:bg-slate-100 disabled:text-slate-500"
                 placeholder="Enter rebuttal remarks for PayPal dispute adjudicator..."
               />
             </div>
@@ -410,10 +410,10 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
                   <div>
                     <div className="flex items-center space-x-1.5 font-bold text-sm text-emerald-800">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                      <span>Evidence Packet Successfully Filed with PayPal!</span>
+                  <span>Evidence submission recorded</span>
                     </div>
                     <p className="mt-1 text-slate-700">
-                      Dispute status updated to <strong>{submissionResult.status}</strong>. Evidence is verified and locked in the PayPal Resolution Center.
+                      Dispute status updated to <strong>{submissionResult.status}</strong>.
                     </p>
                     <div className="pt-2 flex items-center gap-3">
                       <Link
@@ -434,7 +434,7 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
                   <div className="space-y-1">
                     <p className="font-bold flex items-center text-red-800">
                       <AlertTriangle className="w-4 h-4 mr-1.5 text-red-600" />
-                      Submission Rejected by PayPal
+                      Submission failed
                     </p>
                     <p className="text-red-700">{submissionResult.error}</p>
                   </div>
@@ -458,7 +458,7 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
                 <button
                   onClick={() => handleApprove('FIGHT')}
                   disabled={submitting || !isOnline}
-                  className="w-full py-3 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex w-full items-center justify-center rounded-md bg-[#0070ba] px-4 py-3 text-sm font-bold text-white shadow-sm transition-colors hover:bg-[#003087] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <ShieldCheck className="w-4 h-4 mr-2" />
                   {submitting 
@@ -469,7 +469,7 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
                 <button
                   onClick={() => handleApprove('ACCEPT')}
                   disabled={submitting || !isOnline}
-                  className="w-full py-2.5 px-4 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex w-full items-center justify-center rounded-md border border-slate-300 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Accept Claim & Refund Buyer
                 </button>
@@ -485,11 +485,11 @@ export default function DisputeReviewPage({ params }: { params: { id: string } }
           </div>
 
           {/* Audit History Card */}
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Audit Trail (Chain of Custody)</h4>
+          <div className="paypal-card space-y-4 p-6">
+            <h4 className="paypal-eyebrow">Recent activity</h4>
             <div className="space-y-2 text-xs">
               {auditHistory?.map((a: any, idx: number) => (
-                <div key={idx} className="border-l-2 border-blue-500 pl-3 py-1">
+                <div key={idx} className="border-l-2 border-[#0070ba] py-1 pl-3">
                   <p className="font-semibold text-slate-800">{a.eventType}</p>
                   <p className="text-[10px] text-slate-400">
                     By {a.actor} at {new Date(a.timestamp).toLocaleTimeString()}

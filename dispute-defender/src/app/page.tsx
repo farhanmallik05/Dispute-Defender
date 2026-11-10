@@ -6,10 +6,9 @@ import {
   ShieldCheck, 
   Clock, 
   RefreshCw, 
-  DollarSign, 
+  DollarSign,
   Layers,
   LayoutGrid,
-  Sparkles,
   AlertTriangle
 } from 'lucide-react';
 import DisputeGrid, { DisputeGridRow } from '@/components/queue/DisputeGrid';
@@ -97,7 +96,7 @@ export default function DisputeQueuePage() {
         throw new Error(`Sync failed: HTTP ${res.status}`);
       }
       await fetchDisputes();
-      triggerSuccessToast('Sandbox Sync Complete: PayPal disputes retrieved & triaged');
+      triggerSuccessToast('Dispute sync complete');
     } catch (err: any) {
       console.error('Sync failed:', err);
       setError(err.message || 'Dispute synchronization failed.');
@@ -118,29 +117,31 @@ export default function DisputeQueuePage() {
     return true;
   });
 
-  const totalAtRisk = disputes.reduce((sum, d) => sum + (d.amount || 0), 0);
+  const openDisputes = disputes.filter(d => d.status !== 'RESOLVED' && d.status !== 'CLAIM_ACCEPTED');
+  const totalAtRisk = openDisputes.reduce((sum, d) => sum + (d.amount || 0), 0);
   const awaitingCount = disputes.filter(d => d.status === 'AWAITING_APPROVAL').length;
   const submittedCount = disputes.filter(d => d.status === 'EVIDENCE_SUBMITTED').length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-7">
       {/* Top Header & Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            Dispute Command Center
+          <p className="paypal-eyebrow">PayPal dispute workspace</p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight text-[#003087]">
+            Dispute queue
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Real-time PayPal dispute defense queue sorted by seller response SLA urgency.
+            Review open cases, confirm the evidence, and decide what to submit.
           </p>
         </div>
         <div className="flex items-center space-x-3">
-          <div className="flex items-center border border-slate-300 rounded-lg p-0.5 bg-white shadow-sm text-xs font-semibold">
+          <div className="flex items-center border border-slate-200 rounded-md p-0.5 bg-white text-xs font-semibold">
             <button
               onClick={() => setViewMode('AG_GRID')}
               className={`px-2.5 py-1 rounded-md flex items-center transition-colors ${
                 viewMode === 'AG_GRID'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-[#003087] text-white'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -151,7 +152,7 @@ export default function DisputeQueuePage() {
               onClick={() => setViewMode('COMPACT')}
               className={`px-2.5 py-1 rounded-md flex items-center transition-colors ${
                 viewMode === 'COMPACT'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-[#003087] text-white'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -163,17 +164,17 @@ export default function DisputeQueuePage() {
           <button
             onClick={handleSync}
             disabled={syncing}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow-sm transition-colors disabled:opacity-50"
+            className="inline-flex items-center rounded-md bg-[#0070ba] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#003087] disabled:opacity-50"
           >
             <RefreshCw className={`w-4 h-4 mr-2 ${syncing ? 'animate-spin' : ''}`} />
-            {syncing ? 'Syncing...' : 'Sync Sandbox'}
+            {syncing ? 'Syncing...' : 'Sync disputes'}
           </button>
         </div>
       </div>
 
       {/* Slow Network In-Page Alert */}
       {(slowLatencyWarning || isSlowNetwork) && (
-        <div className="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-xl flex items-center justify-between text-xs font-medium">
+        <div className="flex items-center justify-between rounded-md border border-amber-200 bg-amber-50 p-3 text-xs font-medium text-amber-800">
           <div className="flex items-center space-x-2">
             <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
             <span>High latency detected on network path to PayPal Gateway. Requests are being buffered safely.</span>
@@ -197,35 +198,35 @@ export default function DisputeQueuePage() {
           </>
         ) : (
           <>
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div className="paypal-card flex items-center justify-between border-l-4 border-l-[#0070ba] p-5">
               <div>
-                <p className="text-xs font-medium uppercase text-slate-500">Active Capital at Risk</p>
+                <p className="paypal-eyebrow">Open amount at risk</p>
                 <p className="text-2xl font-bold text-slate-900 mt-1">${totalAtRisk.toFixed(2)}</p>
-                <p className="text-xs text-slate-400 mt-1">Across {disputes.length} open disputes</p>
+                <p className="text-xs text-slate-400 mt-1">Across {openDisputes.length} open disputes</p>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-[#0070ba]">
                 <DollarSign className="w-6 h-6" />
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div className="paypal-card flex items-center justify-between border-l-4 border-l-[#ffc439] p-5">
               <div>
-                <p className="text-xs font-medium uppercase text-slate-500">Awaiting 1-Click Approval</p>
+                <p className="paypal-eyebrow">Awaiting your review</p>
                 <p className="text-2xl font-bold text-amber-600 mt-1">{awaitingCount}</p>
                 <p className="text-xs text-slate-400 mt-1">Triage dossiers prepared</p>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 text-amber-600">
                 <Clock className="w-6 h-6" />
               </div>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+            <div className="paypal-card flex items-center justify-between border-l-4 border-l-emerald-500 p-5">
               <div>
-                <p className="text-xs font-medium uppercase text-slate-500">Evidence Packets Filed</p>
+                <p className="paypal-eyebrow">Evidence submitted</p>
                 <p className="text-2xl font-bold text-emerald-600 mt-1">{submittedCount}</p>
-                <p className="text-xs text-slate-400 mt-1">Live in PayPal Resolution Center</p>
+                <p className="text-xs text-slate-400 mt-1">Recorded in the activity log</p>
               </div>
-              <div className="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
                 <ShieldCheck className="w-6 h-6" />
               </div>
             </div>
@@ -234,11 +235,11 @@ export default function DisputeQueuePage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex border-b border-slate-200 space-x-6 text-sm font-medium text-slate-600">
+      <div className="flex overflow-x-auto border-b border-slate-200 space-x-6 text-sm font-medium text-slate-600">
         <button
           onClick={() => setFilter('ALL')}
           className={`pb-3 border-b-2 transition-colors ${
-            filter === 'ALL' ? 'border-blue-600 text-blue-600 font-bold' : 'border-transparent hover:text-slate-900'
+            filter === 'ALL' ? 'border-[#0070ba] text-[#003087] font-bold' : 'border-transparent hover:text-slate-900'
           }`}
         >
           All Disputes ({disputes.length})
@@ -246,7 +247,7 @@ export default function DisputeQueuePage() {
         <button
           onClick={() => setFilter('AWAITING_APPROVAL')}
           className={`pb-3 border-b-2 transition-colors ${
-            filter === 'AWAITING_APPROVAL' ? 'border-blue-600 text-blue-600 font-bold' : 'border-transparent hover:text-slate-900'
+            filter === 'AWAITING_APPROVAL' ? 'border-[#0070ba] text-[#003087] font-bold' : 'border-transparent hover:text-slate-900'
           }`}
         >
           Awaiting Approval ({awaitingCount})
@@ -254,7 +255,7 @@ export default function DisputeQueuePage() {
         <button
           onClick={() => setFilter('SUBMITTED')}
           className={`pb-3 border-b-2 transition-colors ${
-            filter === 'SUBMITTED' ? 'border-blue-600 text-blue-600 font-bold' : 'border-transparent hover:text-slate-900'
+            filter === 'SUBMITTED' ? 'border-[#0070ba] text-[#003087] font-bold' : 'border-transparent hover:text-slate-900'
           }`}
         >
           Evidence Submitted ({submittedCount})
@@ -262,7 +263,7 @@ export default function DisputeQueuePage() {
         <button
           onClick={() => setFilter('RESOLVED')}
           className={`pb-3 border-b-2 transition-colors ${
-            filter === 'RESOLVED' ? 'border-blue-600 text-blue-600 font-bold' : 'border-transparent hover:text-slate-900'
+            filter === 'RESOLVED' ? 'border-[#0070ba] text-[#003087] font-bold' : 'border-transparent hover:text-slate-900'
           }`}
         >
           Resolved / Refunded
@@ -287,7 +288,7 @@ export default function DisputeQueuePage() {
               ? "Your PayPal merchant account is in good standing. No customer disputes, claims, or chargebacks currently require response."
               : `There are currently 0 disputes matching the "${filter}" filter. Switch to "All Disputes" or sync fresh chargebacks from PayPal.`
           }
-          actionLabel="Sync from PayPal Sandbox"
+            actionLabel="Sync disputes"
           onAction={handleSync}
           loading={syncing}
           secondaryActionLabel="Reset Filter View"
@@ -296,7 +297,7 @@ export default function DisputeQueuePage() {
       ) : viewMode === 'AG_GRID' ? (
         <DisputeGrid disputes={filteredDisputes} loading={loading} />
       ) : (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden p-6 text-sm">
+        <div className="paypal-card overflow-hidden p-6 text-sm">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200">
               <thead>

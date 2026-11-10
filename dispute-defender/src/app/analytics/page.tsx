@@ -3,17 +3,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { 
-  ArrowLeft, 
-  DollarSign, 
-  ShieldCheck, 
-  Clock, 
-  TrendingUp, 
-  PieChart, 
-  Award, 
-  Download, 
-  Table, 
-  CheckCircle2,
-  RefreshCw
+  ArrowLeft,
+  Table,
+  CheckCircle2
 } from 'lucide-react';
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-community';
@@ -38,7 +30,7 @@ interface ReasonSummaryRow {
 }
 
 export default function AnalyticsDashboardPage() {
-  const { simulatedState, triggerSuccessToast } = useResilience();
+  const { simulatedState } = useResilience();
   const [disputes, setDisputes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -188,7 +180,7 @@ export default function AnalyticsDashboardPage() {
   }, []);
 
   return (
-    <div className="space-y-8 max-w-6xl mx-auto">
+    <div className="mx-auto max-w-6xl space-y-7">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -197,19 +189,19 @@ export default function AnalyticsDashboardPage() {
               <ArrowLeft className="w-4 h-4 inline mr-1" /> Queue
             </Link>
             <span className="text-slate-300">/</span>
-            <span className="text-sm font-semibold text-slate-700">Analytics</span>
+            <span className="text-sm font-semibold text-slate-700">Overview</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1">
-            Dispute Risk & Capital Defense Analytics
+            Dispute overview
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Enterprise analytics powered by AG Grid data grids and real-time PayPal lifecycle metrics.
+            A factual view of open cases, submissions, and received outcomes.
           </p>
         </div>
 
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200">
-          <Award className="w-3.5 h-3.5 mr-1 text-amber-600" />
-          AG Grid / AG Studio Sponsor Track ($5,000 Target)
+        <span className="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+          <CheckCircle2 className="mr-1.5 h-3.5 w-3.5 text-emerald-600" />
+          Demo data only
         </span>
       </div>
 
@@ -242,20 +234,20 @@ export default function AnalyticsDashboardPage() {
         <>
           {/* KPI Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-              <p className="text-xs font-medium uppercase text-slate-500">Total Dispute Volume</p>
+             <div className="paypal-card border-l-4 border-l-[#0070ba] p-5">
+               <p className="paypal-eyebrow">Open amount at risk</p>
               <p className="text-2xl font-bold text-slate-900 mt-1">${totalAtRisk.toFixed(2)}</p>
               <p className="text-xs text-slate-400 mt-1">{disputes.length} active claims</p>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-              <p className="text-xs font-medium uppercase text-slate-500">Evidence Submitted</p>
+             <div className="paypal-card border-l-4 border-l-emerald-500 p-5">
+               <p className="paypal-eyebrow">Evidence submitted</p>
               <p className="text-2xl font-bold text-emerald-600 mt-1">${totalSubmitted.toFixed(2)}</p>
               <p className="text-xs text-emerald-600 mt-1">{submittedDisputes.length} dossiers filed</p>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-              <p className="text-xs font-medium uppercase text-slate-500">Settled Win Rate</p>
+             <div className="paypal-card border-l-4 border-l-[#ffc439] p-5">
+               <p className="paypal-eyebrow">Seller-favour outcomes</p>
               <p className="text-2xl font-bold text-blue-600 mt-1">
                 {realWinRate !== null ? `${realWinRate}%` : 'Awaiting Result'}
               </p>
@@ -264,29 +256,29 @@ export default function AnalyticsDashboardPage() {
               </p>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-              <p className="text-xs font-medium uppercase text-slate-500">Penalty Fees Saved</p>
+             <div className="paypal-card p-5">
+               <p className="paypal-eyebrow">Accepted claims</p>
               <p className="text-2xl font-bold text-purple-600 mt-1">${feesSaved}.00</p>
-              <p className="text-xs text-slate-400 mt-1">By accepting without dispute fee</p>
+               <p className="text-xs text-slate-400 mt-1">Recorded local decisions</p>
             </div>
 
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-              <p className="text-xs font-medium uppercase text-slate-500">SLA Compliance Rate</p>
-              <p className="text-2xl font-bold text-slate-900 mt-1">100%</p>
-              <p className="text-xs text-emerald-600 mt-1">0 missed deadlines</p>
+             <div className="paypal-card p-5">
+               <p className="paypal-eyebrow">Response deadlines</p>
+               <p className="mt-1 text-2xl font-bold text-slate-900">{disputes.filter(d => d.dueDate).length}</p>
+               <p className="mt-1 text-xs text-slate-400">Cases with a stored due date</p>
             </div>
           </div>
 
           {/* AG Grid Reason Matrix Card */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+           <div className="paypal-card overflow-hidden">
+               <div className="flex items-center justify-between border-b border-slate-200 bg-white p-5">
               <div>
                 <h3 className="text-base font-bold text-slate-900 flex items-center">
-                  <Table className="w-4 h-4 mr-2 text-blue-600" />
-                  AG Grid Dispute Reason Risk Matrix
+                   <Table className="mr-2 h-4 w-4 text-[#0070ba]" />
+                   Dispute reason summary
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
-                  Multi-column sorting and filtering across dispute reasons, capital volume, and defense strategies.
+                   Sort and filter the local dispute records by reason and amount.
                 </p>
               </div>
             </div>
@@ -303,48 +295,6 @@ export default function AnalyticsDashboardPage() {
             </div>
           </div>
 
-          {/* Sponsor Track Showcase Card */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
-            <h3 className="text-base font-bold text-slate-900 flex items-center">
-              <Award className="w-4 h-4 mr-2 text-amber-500" />
-              Sponsor Track Integration Matrix
-            </h3>
-            <p className="text-xs text-slate-500">
-              Dispute Defender combines three enterprise developer technologies to build a robust, scalable defense system:
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-              <div className="border border-slate-200 rounded-lg p-4 bg-slate-50/50">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-sm text-slate-900">AG Grid / AG Studio</span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">$5,000 Target</span>
-                </div>
-                <p className="text-xs text-slate-600">
-                  Dual implementation powering the real-time Dispute Command Center Queue and this Risk Matrix with sorting, filters, and CSV export.
-                </p>
-              </div>
-
-              <div className="border border-slate-200 rounded-lg p-4 bg-slate-50/50">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-sm text-slate-900">Render Workflows</span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800">Deployment</span>
-                </div>
-                <p className="text-xs text-slate-600">
-                  Resilient task execution with durability-as-code orchestration defined in render.yaml for automated dispute pipeline handling.
-                </p>
-              </div>
-
-              <div className="border border-slate-200 rounded-lg p-4 bg-slate-50/50">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-sm text-slate-900">APIMatic Context Plugin</span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-100 text-purple-800">$1,000 Target</span>
-                </div>
-                <p className="text-xs text-slate-600">
-                  Strict PayPal Server SDK TypeScript type-safety guiding Orders v2 and Transaction Reporting v1 lookups without hallucinated SDK types.
-                </p>
-              </div>
-            </div>
-          </div>
         </>
       )}
     </div>

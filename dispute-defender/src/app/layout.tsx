@@ -15,63 +15,65 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const isDemoMode = process.env.INTEGRITY_MODE === 'demo';
+
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
+      <body className="min-h-screen flex flex-col bg-[#f5f7fa] text-slate-900">
         <ResilienceProvider>
           <NetworkStatusBanner />
-          <header className="bg-white border-b border-slate-200 sticky top-0 z-30">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+          <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+            <div className="mx-auto flex h-[68px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#003087] text-sm font-bold tracking-tight text-white shadow-sm">
                   DD
                 </div>
                 <div>
-                  <Link href="/" className="text-xl font-bold tracking-tight text-slate-900 hover:text-blue-600">
+                  <Link href="/" className="text-[17px] font-semibold tracking-tight text-[#003087] hover:text-[#0070ba]">
                     Dispute Defender
                   </Link>
-                  <span className="ml-2.5 inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-                    PayPal Sandbox
+                  <span className="ml-2 inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+                    {isDemoMode ? 'Demo mode' : 'PayPal Sandbox'}
                   </span>
                 </div>
               </div>
-              <nav className="flex items-center space-x-6 text-sm font-medium">
-                <Link href="/" className="text-slate-700 hover:text-blue-600 transition-colors">
+              <nav className="flex items-center gap-1 text-sm font-medium" aria-label="Primary navigation">
+                <Link href="/" className="rounded-md px-3 py-2 text-slate-600 transition-colors hover:bg-slate-50 hover:text-[#003087]">
                   Dispute Queue
                 </Link>
-                <Link href="/analytics" className="text-slate-700 hover:text-blue-600 transition-colors">
-                  Risk Analytics
+                <Link href="/analytics" className="rounded-md px-3 py-2 text-slate-600 transition-colors hover:bg-slate-50 hover:text-[#003087]">
+                  Overview
                 </Link>
-                <Link href="/audit" className="text-slate-700 hover:text-blue-600 transition-colors">
-                  Audit Trail
+                <Link href="/audit" className="rounded-md px-3 py-2 text-slate-600 transition-colors hover:bg-slate-50 hover:text-[#003087]">
+                  Activity
                 </Link>
-                <div className="h-4 w-px bg-slate-200" />
+                <div className="mx-2 hidden h-5 w-px bg-slate-200 sm:block" />
                 <Link
                   href="/api/health"
                   target="_blank"
-                  title="View Live System Health & Diagnostics"
-                  className="flex items-center text-xs text-emerald-700 bg-emerald-50 hover:bg-emerald-100 transition-colors px-2.5 py-1 rounded-full border border-emerald-200 font-mono"
+                  title="View system health and diagnostics"
+                  className="hidden items-center rounded-md border border-slate-200 px-3 py-2 font-mono text-[11px] text-slate-600 transition-colors hover:border-[#0070ba] hover:text-[#003087] sm:flex"
                 >
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse" />
-                  Live Health
+                  <span className="mr-2 h-2 w-2 rounded-full bg-emerald-500" />
+                  Health
                 </Link>
               </nav>
             </div>
           </header>
 
-          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
             {children}
           </main>
 
-          <footer className="border-t border-slate-200 bg-white py-4 text-center text-xs text-slate-500">
-            <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
-              <div>Dispute Defender · Open Source PayPal AI Agent · MIT License</div>
+          <footer className="border-t border-slate-200 bg-white py-5 text-xs text-slate-500">
+            <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 sm:flex-row sm:px-6 lg:px-8">
+              <div>Dispute Defender · PayPal dispute review workspace</div>
               <div className="flex items-center gap-3 text-slate-400">
                 <Link href="/api/health" target="_blank" className="hover:text-blue-600 transition-colors">
-                  API Diagnostics
+                  System health
                 </Link>
-                <span>·</span>
-                <span>Render Workflows · AG Grid · APIMatic · Vercel AI SDK</span>
+                <span aria-hidden="true">·</span>
+                <span>Demo-ready prototype</span>
               </div>
             </div>
           </footer>

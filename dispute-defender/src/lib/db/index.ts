@@ -24,8 +24,47 @@ if (dbPath !== ':memory:') {
 }
 
 const sqlite = new DatabaseSync(dbPath);
-sqlite.exec('PRAGMA busy_timeout = 10000; PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
-sqlite.exec(`
+const initializationLockPath = dbPath === ':memory:' ? null : `${path.resolve(dbPath)}.init.lock`;
+
+function sleepSynchronously(milliseconds: number): void {
+  const buffer = new SharedArrayBuffer(4);
+  Atomics.wait(new Int32Array(buffer), 0, 0, milliseconds);
+}
+
+function acquireInitializationLock(): (() => void) | null {
+  if (!initializationLockPath) return null;
+
+  const deadline = Date.now() + 30_000;
+  while (Date.now() < deadline) {
+    try {
+      const descriptor = fs.openSync(initializationLockPath, 'wx');
+      fs.writeFileSync(descriptor, `${process.pid}\n`, 'utf8');
+      return () => {
+        try { fs.closeSync(descriptor); } catch {}
+        try { fs.unlinkSync(initializationLockPath); } catch {}
+      };
+    } catch (error: any) {
+      if (error?.code !== 'EEXIST') throw error;
+      sleepSynchronously(50);
+    }
+  }
+
+  throw new Error(`Timed out waiting for SQLite initialization lock: ${initializationLockPath}`);
+}
+
+function columnsFor(table: string): Set<string> {
+  return new Set(
+    (sqlite.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>)
+      .map(column => column.name)
+  );
+}
+
+const releaseInitializationLock = acquireInitializationLock();
+try {
+  sqlite.exec('PRAGMA busy_timeout = 10000;');
+  sqlite.exec('PRAGMA journal_mode = WAL;');
+  sqlite.exec('PRAGMA foreign_keys = ON;');
+  sqlite.exec(`
   CREATE TABLE IF NOT EXISTS disputes (
     id TEXT PRIMARY KEY,
     status TEXT NOT NULL,
@@ -79,19 +118,16 @@ sqlite.exec(`
     event_type TEXT NOT NULL,
     received_at TEXT NOT NULL
   );
-`);
-try { sqlite.exec('ALTER TABLE disputes ADD COLUMN outcome_code TEXT;'); } catch {}
-try { sqlite.exec('ALTER TABLE disputes ADD COLUMN resolved_at TEXT;'); } catch {}
-
-const columnsFor = (table: string): Set<string> => new Set(
-  (sqlite.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>)
-    .map(column => column.name)
-);
-
-if (!columnsFor('audit_logs').has('event_id')) {
-  sqlite.exec('ALTER TABLE audit_logs ADD COLUMN event_id TEXT');
+  `);
+  try { sqlite.exec('ALTER TABLE disputes ADD COLUMN outcome_code TEXT;'); } catch {}
+  try { sqlite.exec('ALTER TABLE disputes ADD COLUMN resolved_at TEXT;'); } catch {}
+  if (!columnsFor('audit_logs').has('event_id')) {
+    sqlite.exec('ALTER TABLE audit_logs ADD COLUMN event_id TEXT');
+  }
+  sqlite.exec('CREATE INDEX IF NOT EXISTS audit_logs_event_id_idx ON audit_logs(event_id)');
+} finally {
+  releaseInitializationLock?.();
 }
-sqlite.exec('CREATE INDEX IF NOT EXISTS audit_logs_event_id_idx ON audit_logs(event_id)');
 
 type TableKey = 'disputes' | 'dispute_contexts' | 'triage_decisions' | 'audit_logs' | 'webhook_events';
 type Table = Record<string | symbol, any>;

@@ -3,12 +3,72 @@
 @tailwind utilities;
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f5f7fa;
+  --foreground: #1f2937;
+  --paypal-navy: #003087;
+  --paypal-blue: #0070ba;
+  --paypal-yellow: #ffc439;
+  --border-muted: #d9e0e7;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(0, 112, 186, 0.35);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: rgba(0, 112, 186, 0.18);
+}
+
+.paypal-card {
+  @apply rounded-lg border border-slate-200 bg-white shadow-sm;
+}
+
+.paypal-eyebrow {
+  @apply text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500;
+}
+
+.paypal-grid.ag-theme-quartz {
+  --ag-header-background-color: #f5f7fa;
+  --ag-header-foreground-color: #52606d;
+  --ag-border-color: #d9e0e7;
+  --ag-row-border-color: #edf0f2;
+  --ag-selected-row-background-color: #eef6fc;
+  --ag-row-hover-color: #f7fbfe;
+  --ag-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ag-font-size: 13px;
+  --ag-header-column-separator-display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

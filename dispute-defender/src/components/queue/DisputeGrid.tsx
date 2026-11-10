@@ -45,7 +45,7 @@ export default function DisputeGrid({ disputes, loading }: DisputeGridProps) {
       return disputes.filter(d => {
         if (!d.dueDate) return false;
         const diffHours = (new Date(d.dueDate).getTime() - now) / (1000 * 60 * 60);
-        return diffHours > 0 && diffHours <= 24;
+         return diffHours <= 24;
       });
     }
     return disputes;
@@ -74,22 +74,23 @@ export default function DisputeGrid({ disputes, loading }: DisputeGridProps) {
     const due = new Date(dueDateStr).getTime();
     const now = Date.now();
     const diffHours = Math.round((due - now) / (1000 * 60 * 60));
-    const isUrgent = diffHours <= 48;
-    const isCritical = diffHours <= 24;
+     const isOverdue = diffHours <= 0;
+     const isUrgent = !isOverdue && diffHours <= 48;
+     const isCritical = !isOverdue && diffHours <= 24;
 
     return (
       <div className="flex items-center h-full">
         <span
           className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${
-            isCritical
-              ? 'bg-red-100 text-red-800 border border-red-300 animate-pulse'
+             isOverdue || isCritical
+               ? 'bg-red-100 text-red-800 border border-red-300'
               : isUrgent
               ? 'bg-amber-100 text-amber-800 border border-amber-300'
               : 'bg-slate-100 text-slate-700 border border-slate-200'
           }`}
         >
           <Clock className="w-3 h-3 mr-1" />
-          {diffHours > 24 ? `${Math.round(diffHours / 24)}d left` : `${diffHours}h left`}
+           {isOverdue ? 'Overdue' : diffHours > 24 ? `${Math.round(diffHours / 24)}d left` : `${diffHours}h left`}
         </span>
       </div>
     );
@@ -152,7 +153,7 @@ export default function DisputeGrid({ disputes, loading }: DisputeGridProps) {
       <div className="flex items-center justify-end h-full">
         <Link
           href={`/disputes/${id}`}
-          className="inline-flex items-center px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-md shadow-sm transition-colors"
+          className="inline-flex items-center rounded-md bg-[#003087] px-3 py-1 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-[#001c64]"
         >
           Review & Approve
           <ArrowRight className="w-3 h-3 ml-1" />
@@ -246,7 +247,7 @@ export default function DisputeGrid({ disputes, loading }: DisputeGridProps) {
   return (
     <div className="space-y-3">
       {/* Search, Filter Tabs and Export Bar */}
-      <div className="flex flex-col gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+      <div className="flex flex-col gap-3 rounded-lg border border-slate-200 bg-white p-3">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div className="relative w-full sm:w-80">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
@@ -254,18 +255,19 @@ export default function DisputeGrid({ disputes, loading }: DisputeGridProps) {
               type="text"
               value={quickFilterText}
               onChange={e => setQuickFilterText(e.target.value)}
-              placeholder="Filter by ID, buyer, carrier, reason, amount..."
-              className="w-full pl-9 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm"
+              placeholder="Search dispute ID or reason"
+              aria-label="Search disputes"
+              className="w-full rounded-md border border-slate-300 bg-white py-2 pl-9 pr-3 text-xs shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0070ba]"
             />
           </div>
 
           <div className="flex items-center space-x-2">
             <span className="text-xs text-slate-500 font-medium hidden sm:inline">
-              Powered by <strong>AG Grid</strong>
+              {filteredDisputes.length} case{filteredDisputes.length === 1 ? '' : 's'} shown
             </span>
             <button
               onClick={handleExportCsv}
-              className="inline-flex items-center px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-sm transition-colors"
+              className="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
               title="Export filtered dispute queue to CSV"
             >
               <Download className="w-3.5 h-3.5 mr-1 text-slate-500" />
@@ -287,7 +289,7 @@ export default function DisputeGrid({ disputes, loading }: DisputeGridProps) {
                 { id: 'CRITICAL', label: 'Critical (<24h)', count: disputes.filter(d => {
                   if (!d.dueDate) return false;
                   const diff = (new Date(d.dueDate).getTime() - Date.now()) / (1000 * 60 * 60);
-                  return diff > 0 && diff <= 24;
+                   return diff <= 24;
                 }).length },
                 { id: 'EVIDENCE_SUBMITTED', label: 'Evidence Filed', count: disputes.filter(d => d.status === 'EVIDENCE_SUBMITTED').length },
                 { id: 'RESOLVED', label: 'Settled', count: disputes.filter(d => d.status === 'RESOLVED' || d.status === 'CLAIM_ACCEPTED').length }
@@ -298,7 +300,7 @@ export default function DisputeGrid({ disputes, loading }: DisputeGridProps) {
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
                   activeTab === tab.id
-                    ? 'bg-blue-600 text-white shadow-xs'
+                    ? 'bg-[#003087] text-white shadow-xs'
                     : 'bg-white hover:bg-slate-100 text-slate-600 border border-slate-200'
                 }`}
               >
@@ -315,7 +317,7 @@ export default function DisputeGrid({ disputes, loading }: DisputeGridProps) {
       </div>
 
       {/* AG Grid Container */}
-      <div className="ag-theme-quartz w-full shadow-sm rounded-xl overflow-hidden border border-slate-200">
+      <div className="paypal-grid ag-theme-quartz w-full overflow-hidden rounded-lg border border-slate-200 shadow-sm">
         <AgGridReact<DisputeGridRow>
           ref={gridRef}
           rowData={filteredDisputes}

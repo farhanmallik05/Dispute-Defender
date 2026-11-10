@@ -4,15 +4,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { 
   ArrowLeft, 
-  Shield, 
-  Clock, 
   User, 
   Cpu, 
   Database, 
   ChevronDown, 
   ChevronRight, 
-  RefreshCw,
-  AlertOctagon
+  RefreshCw
 } from 'lucide-react';
 import { useResilience } from '@/context/ResilienceContext';
 import { GridRowSkeleton, EmptyStateCard, ErrorStateCard } from '@/components/common/StateViews';
@@ -110,7 +107,7 @@ export default function AuditTrailPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto">
+    <div className="mx-auto max-w-6xl space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -122,17 +119,17 @@ export default function AuditTrailPage() {
             <span className="text-sm font-semibold text-slate-700">Audit Trail</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 mt-1">
-            Immutable Regulatory Audit Stream
+             Activity log
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Verifiable, append-only chronological log of every webhook, AI decision, and merchant approval action.
+             A chronological record of ingestion, triage, and merchant actions.
           </p>
         </div>
 
         <button
           onClick={() => fetchLogs(true)}
           disabled={loading}
-          className="inline-flex items-center px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold rounded-lg shadow-sm transition-colors disabled:opacity-50"
+           className="inline-flex items-center rounded-md border border-slate-300 bg-white px-3.5 py-2 text-xs font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 disabled:opacity-50"
         >
           <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${loading ? 'animate-spin text-blue-600' : 'text-slate-500'}`} />
           Refresh Audit Stream
@@ -199,7 +196,7 @@ export default function AuditTrailPage() {
         />
       ) : (
         /* Event Table / Timeline */
-        <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden text-sm">
+        <div className="paypal-card overflow-hidden text-sm">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200">
               <thead className="bg-slate-50 text-left font-bold text-xs uppercase tracking-wider text-slate-500">
@@ -253,7 +250,7 @@ export default function AuditTrailPage() {
                           <td colSpan={6} className="p-4 pl-12">
                             <div className="bg-slate-900 rounded-lg p-3 text-slate-200 font-mono text-[11px] overflow-x-auto shadow-inner">
                               <div className="flex justify-between items-center text-slate-400 border-b border-slate-800 pb-1 mb-2 text-[10px]">
-                                <span>PAYLOAD SNAPSHOT (CRYPTOGRAPHIC AUDIT PROOF)</span>
+                                 <span>RECORDED EVENT PAYLOAD</span>
                                 <span>LOG_ID: {l.id}</span>
                               </div>
                               <pre>{JSON.stringify(l.payload, null, 2)}</pre>
