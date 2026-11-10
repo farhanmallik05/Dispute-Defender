@@ -188,11 +188,18 @@ Next.js API -> Context -> Redaction -> Triage
 
 | Check | Last reported result in this workspace session |
 | :--- | :--- |
-| Production build | Passed |
-| Local E2E suite | 32 / 32 passed |
+| Production build (`next build`) | Passed (0 errors) |
+| Non-interactive ESLint (`next lint`) | Passed (0 warnings or errors) |
+| Environment schema validation | 3 / 3 passed |
 | Basic redaction suite | 5 / 5 passed |
-| Adversarial redaction suites | 40 / 40 and 41 / 41 passed |
+| Carrier detection suite | 6 / 6 passed |
+| Proactive SLA monitor suite | 3 / 3 passed |
+| Multipart binary attachment suite | 3 / 3 passed |
+| Health & resilience suites | 11 / 11 passed |
+| Local E2E runner (4 tiers) | 32 / 32 passed |
 | Approval / HATEOAS challenger suite | 14 / 14 passed |
+| Adversarial stress batteries | 81 / 81 passed |
+| **Total Automated Tests** | **158 / 158 passed (100% pass rate)** |
 
 **Local results ≠ live PayPal verification or production certification.**
 
