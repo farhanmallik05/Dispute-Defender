@@ -18,6 +18,7 @@ This repository contains the complete hackathon submission materials, architectu
   - [`PROJECT_REPORT.md`](./plan/PROJECT_REPORT.md): Comprehensive end-to-end master project report for hackathon submission and evaluation.
 - **[`presentation/`](./presentation/)**: Submission presentation slide deck
   - [`dispute-defender.md`](./presentation/dispute-defender.md): 12-slide Marp-compatible presentation deck with speaker notes and honest verification boundaries.
+- **[`DEVPOST_SUBMISSION.md`](./DEVPOST_SUBMISSION.md)**: Copy-paste ready Devpost submission metadata, description, sponsor alignment, and judge testing instructions.
 - **[`PAYPAL_DESIGN.md`](./PAYPAL_DESIGN.md)**: PayPal-inspired visual design tokens, typography, hierarchy, and interaction specifications.
 - **[`dispute-defender/`](./dispute-defender/)**: The production fullstack application (Next.js 14, AG Grid, Vercel AI SDK, SQLite, Render deployment).
 
