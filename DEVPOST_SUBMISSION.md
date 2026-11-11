@@ -17,7 +17,7 @@
 `paypal-api`, `paypal-agent-toolkit`, `next.js-14`, `typescript`, `ag-grid`, `vercel-ai-sdk`, `google-gemini`, `sqlite`, `render`, `tailwind-css`, `zod`, `rest-api`
 
 ### Repository URL
-`https://github.com/Farhan-B/Dispute-Defender`
+`https://github.com/farhanmallik05/Dispute-Defender`
 
 ### Demo URL
 `https://dispute-defender.onrender.com`
