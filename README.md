@@ -2,6 +2,13 @@
 
 > **Dispute Defender**: Open-source autonomous AI agent that triages PayPal disputes, builds the evidence packet, and submits it after one-click merchant approval.
 
+[![Live Demo](https://img.shields.io/badge/Demo-Live%20on%20Render-46E3B7?style=for-the-badge&logo=render)](https://dispute-defender-8001.onrender.com)
+[![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/farhanmallik05/Dispute-Defender)
+[![Tests Passing](https://img.shields.io/badge/Tests-158%2F158%20Passed-brightgreen?style=for-the-badge)](https://github.com/farhanmallik05/Dispute-Defender)
+
+- 🌐 **Live Web Application:** [https://dispute-defender-8001.onrender.com](https://dispute-defender-8001.onrender.com)
+- 📦 **GitHub Repository:** [https://github.com/farhanmallik05/Dispute-Defender](https://github.com/farhanmallik05/Dispute-Defender)
+
 This repository contains the complete hackathon submission materials, architecture documentation, and codebase:
 
 ## Workspace Structure

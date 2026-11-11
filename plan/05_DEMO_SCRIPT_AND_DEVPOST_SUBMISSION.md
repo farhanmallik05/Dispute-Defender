@@ -115,7 +115,7 @@ PayPal's Customer Disputes API is strictly gated by state: evidence can only be 
 ## 3. Sandbox Test Buyer Instructions for Hackathon Judges
 
 To verify Dispute Defender with real PayPal Sandbox accounts:
-1. Navigate to the hosted demo URL: `https://dispute-defender.onrender.com`
+1. Navigate to the hosted demo URL: `https://dispute-defender-8001.onrender.com`
 2. Click **Sync Disputes** to populate the AG Grid queue with active sandbox disputes.
 3. Select any dispute in `AWAITING APPROVAL` to inspect the AI verdict, evidence checklist, and redaction diff.
 4. Edit the merchant notes and click **Approve & Submit Evidence**.

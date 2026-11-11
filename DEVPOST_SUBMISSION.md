@@ -20,7 +20,7 @@
 `https://github.com/farhanmallik05/Dispute-Defender`
 
 ### Demo URL
-`https://dispute-defender.onrender.com`
+`https://dispute-defender-8001.onrender.com`
 
 ### Video Demonstration URL
 `https://youtu.be/YOUR_DEMO_VIDEO_ID` *(Replace with your 2:40 YouTube link)*
@@ -178,7 +178,7 @@ npm run dev # Open http://localhost:3000
 ```
 
 ### Sandbox Test Merchant Credentials
-- **Hosted Application:** `https://dispute-defender.onrender.com`
+- **Hosted Application:** `https://dispute-defender-8001.onrender.com`
 - **PayPal Sandbox Resolution Center:** `https://www.sandbox.paypal.com/disputes/`
 - **Merchant Login:** `sandbox-merchant@disputedefender.dev`
 - **Password:** *(Provided in Devpost Confidential Field)*

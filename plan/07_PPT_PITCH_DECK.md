@@ -398,7 +398,7 @@
 |                                                                                                    |
 |                  "Dispute Defender: Giving small merchants big business power."                     |
 |                                                                                                    |
-|  GitHub: github.com/Farhan/dispute-defender   |   Demo: dispute-defender.onrender.com              |
+|  GitHub: github.com/farhanmallik05/Dispute-Defender   |   Demo: dispute-defender-8001.onrender.com         |
 +----------------------------------------------------------------------------------------------------+
 ```
 
