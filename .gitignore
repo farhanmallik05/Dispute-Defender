@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Next.js build
+.next/
+out/
+dist/
+
+# SQLite files & locks
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
+*.db
+*.db-shm
+*.db-wal
+*.init.lock
+
+# Environment
+.env
+.env*.local
+
+# OS
+.DS_Store
+Thumbs.db
